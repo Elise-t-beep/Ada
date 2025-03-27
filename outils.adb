@@ -46,8 +46,7 @@ PACKAGE BODY Outils IS
 -----------------------------------------------------------------------------------------------------
 
    PROCEDURE Saisie_Titre (T : OUT T_Titre; K : OUT Integer) IS
-      --procedure afin de verifier que tous les mots saisis sont "grammaticalement" corrects
-      Ok : Boolean := False;
+      Ok : Boolean;
    BEGIN
       LOOP
          --invit de saisie dans le programme principal
@@ -115,12 +114,35 @@ PACKAGE BODY Outils IS
 
    PROCEDURE Init_Empreinte (Emp : OUT Integer) IS
       Mdp : T_Mdp;
+      Ok : Boolean;
    BEGIN
       --verif du login = mdp ?
       --saisie que si admin (faire verif ?)
       Put ("saisie du mdp (10 caracteres) : ");
       Get(Mdp); Skip_Line;
-      Emp := Calcul_Empreinte (Mdp);
+      FOR I IN Mdp'RANGE LOOP
+         CASE Mdp(I) IS
+            WHEN 'A'..'Z' =>
+               Ok := True;
+            WHEN 'a'..'z' =>
+               Ok := True;
+            WHEN '0'..'9' =>
+               Ok := True;
+            WHEN '#'|'$'|'*'|'.'|'!'|'?' =>
+               Ok := True;
+            WHEN OTHERS =>
+               Ok := False;
+               EXIT;
+         END CASE;
+      END LOOP;
+      Put ("Le mdp saisi est : "); Put (Mdp);
+      New_Line;
+      IF Ok = True THEN
+         Emp := Calcul_Empreinte (Mdp);
+      ELSE
+         Put ("erreur saisie Mdp"); Skip_Line;
+      END IF;
+
    END Init_Empreinte;
 
 
