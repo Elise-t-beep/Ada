@@ -129,14 +129,14 @@ PACKAGE BODY Liste_Personnel IS
    END Ajout_Pers;
 -----------------------------------------------------------------------------------------------------
 -- Pas encore testée la verif connexion je savais pas comment faire pour l'instant
-   FUNCTION Verif_Connexion (L : IN T_Pteurpers; Pers : IN T_Personnel;Login:T_titre;Empreinte:integer) RETURN Boolean IS
+   FUNCTION Verif_Connexion (L : IN T_Pteurpers;Login:T_titre;Empreinte:integer) RETURN Boolean IS
       Trouve : Boolean;
    BEGIN
       IF L/= NULL THEN
          IF L.personnel.login = Login and L.personnel.empreinteMDP = Empreinte THEN
             Trouve := True;
          ELSE
-           trouve:=Verif_Connexion(L.persuiv,pers,login,empreinte);
+           trouve:=Verif_Connexion(L.persuiv,login,empreinte);
          END IF;
       ELSE
          Trouve:=False;
@@ -144,7 +144,27 @@ PACKAGE BODY Liste_Personnel IS
       RETURN(Trouve);
    END Verif_Connexion;
 -----------------------------------------------------------------------------------------------------
-      PROCEDURE Defiler_Pers (L: IN OUT T_Pteurpers;Pers: OUT T_personnel; Erreur:OUT Boolean)IS
+   PROCEDURE Connexion_Pers ( L: T_Pteurpers;Login : T_Titre; Empreinte : Integer; Fonction : Role_P) IS
+   BEGIN
+      IF Verif_Connexion (L,Login,Empreinte) THEN
+         Put_Line("Utilisateur trouve dans le personnel");
+         IF Fonction = Medecin THEN
+            Put("Envoie vers le menu Personnel Medecin");
+         ELSIF
+               Fonction = Administrateur THEN
+            Put("Envoie vers le menu Personnel Secretaire");
+         ELSIF
+               Fonction = Secretaire THEN
+            Put("Envoie vers le menu Personnel Secretaire");
+         ELSE
+            Put("Menu patient ou erreur de saisie.");
+         END IF;
+      ELSE
+         Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
+      END IF;
+   END Connexion_Pers;
+-----------------------------------------------------------------------------------------------------
+      PROCEDURE Supp_1Pers (L: IN OUT T_Pteurpers;Pers: OUT T_personnel; Erreur:OUT Boolean)IS
    BEGIN
       IF L = NULL THEN
          Erreur:=True; New_Line;
@@ -153,7 +173,7 @@ PACKAGE BODY Liste_Personnel IS
          Erreur:=False;
          L:= L.persuiv;
       END IF;
-   END Defiler_Pers;
+   END supp_1Pers;
 -----------------------------------------------------------------------------------------------------
    PROCEDURE Supp_Secretaire (L:IN OUT T_Pteurpers;Id: out t_pers;Pers : out t_personnel) IS
       Tmp: T_Pteurpers:=L;
@@ -163,7 +183,7 @@ PACKAGE BODY Liste_Personnel IS
       WHILE Tmp/=NULL LOOP
          IF Id = Tmp.Personnel.Identite_Personnel THEN
             IF Tmp.Personnel.Fonction = Secretaire THEN
-               Defiler_Pers(L,Tmp.Personnel,Erreur);
+               supp_1Pers(L,Tmp.Personnel,Erreur);
                Pers:= tmp.personnel;
             END IF;
          END IF;
@@ -171,5 +191,7 @@ PACKAGE BODY Liste_Personnel IS
       END LOOP;
    END Supp_Secretaire;
 -----------------------------------------------------------------------------------------------------
+
+
 END Liste_Personnel;
 

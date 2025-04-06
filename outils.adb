@@ -59,6 +59,8 @@ PACKAGE BODY Outils IS
                      Ok := False;
                      EXIT;
                   END IF;
+               WHEN '_'=> Ok:=True;
+
                WHEN OTHERS =>
                   Put ("Erreur de saisie, caracteres non autorises ");
                   Ok := False;
