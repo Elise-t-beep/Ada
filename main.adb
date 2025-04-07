@@ -1,5 +1,5 @@
-WITH Outils, Ada.Text_Io, Ada.Characters.Handling;
-USE Outils, Ada.Text_Io, Ada.Characters.Handling;
+WITH Outils, Patients, Arbre_Patients, Ada.Text_Io, Ada.Integer_Text_IO, Ada.Characters.Handling;
+USE Outils, Patients, Arbre_Patients, Ada.Text_Io, Ada.Integer_Text_IO, Ada.Characters.Handling;
 
 
 PROCEDURE Main IS
@@ -9,12 +9,13 @@ PROCEDURE Main IS
    Emp : Integer;
    Mdp : T_Mdp;
    T : T_Titre;
+   Pat : T_Arbre;
 
 BEGIN
    Put ("------------------------");
    New_Line;
-   Put ("test packages outils ");
-   New_Line;
+--   Put ("test packages outils ");
+--   New_Line;
 --   Put ("saisie mot : ");
 --   New_Line;
 --   Saisie_Mot (M, K);
@@ -22,15 +23,22 @@ BEGIN
 --   Put ("saisie id : ");
 --   New_Line;
 --   Saisie_Identite (Id);
-   Put ("saisie mdp");
+--   Put ("saisie mdp");
+--   New_Line;
+--   Init_Empreinte (Emp);
+--   Put (emp);
+--   Saisie_Titre (T, K);
+--   Put (T);
+   Put ("test packages arbre_patients");
    New_Line;
-   Init_Empreinte (Emp);
-   Put (Mdp);
+   Init_Arbre (Pat);
+   Affichage_Prefixe (Pat);
+
+
 
 --les commentaires dessous= pas tester
---   FUNCTION Calcul_Empreinte (Mdp : T_Mdp) RETURN Integer;
 --   PROCEDURE Saisie_Titre (T : OUT T_Titre; K : OUT Integer);
-
+-- Procedure Creation login teste par Lydia
 
 
 
