@@ -34,6 +34,11 @@ PACKAGE Arbre_Patients IS
    PROCEDURE Saisie_Patient (A : IN OUT T_Arbre; Pat : OUT T_Patient);
    PROCEDURE Saisie_NOMJM (Pat : OUT T_Patient);
    PROCEDURE Saisie_Fonction (Pat : OUT T_Patient);
+   PROCEDURE Visu_1Patient (Pat : IN T_Patient);
+   FUNCTION Homonyme (A: IN T_Arbre; Pat : IN T_Pers) RETURN Boolean;
+   PROCEDURE Ajout_Pat (A: IN OUT T_Arbre; Pat: IN T_Patient);
+   FUNCTION Recherche_Pat (A : T_Arbre; Pat : T_Patient) RETURN Boolean;
+   PROCEDURE Supp_Patient (A : IN OUT T_Arbre; Id : OUT T_Pers; Pat : T_Patient);
 
 
 END Arbre_Patients;
