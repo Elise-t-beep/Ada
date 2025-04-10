@@ -1,5 +1,11 @@
 PACKAGE BODY Outils IS
-
+-----------------------------------------------------------------------------------------------------
+   PROCEDURE Tiret (N : IN Natural) IS
+   BEGIN
+      FOR I IN 1..2*N LOOP
+         Put ('-');
+      END LOOP;
+   END Tiret;
    -----------------------------------------------------------------------------------------------------
    PROCEDURE Saisie_Mot (M : OUT T_Mot; K : OUT Integer) IS
       Ok : Boolean := False;
@@ -39,13 +45,10 @@ PACKAGE BODY Outils IS
    PROCEDURE Saisie_Titre (M : OUT T_Titre; K :    OUT Integer) IS
       Ok : Boolean := False;
    BEGIN
-      put_line("Veuillez saisir le titre:");
-      LOOP
          M := (OTHERS =>' ');
          Put ("Saisie : ");
          Get_Line (M, K);
          M := To_Upper (M);
-      END LOOP;
    END Saisie_Titre;
 
    -----------------------------------------------------------------------------------------------------

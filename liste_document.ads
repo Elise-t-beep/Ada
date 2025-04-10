@@ -1,5 +1,5 @@
-WITH Ada.Characters.Handling, Ada.Text_IO, personnel,outils,liste_personnel,date,file_demande,document;
-USE Ada.Characters.Handling, Ada.Text_Io, personnel,outils,liste_personnel,date,file_demande,document;
+WITH Ada.Characters.Handling, Ada.Text_IO, personnel,outils,liste_personnel,date,document;
+USE Ada.Characters.Handling, Ada.Text_Io, personnel,outils,liste_personnel,date,document;
 
 PACKAGE Liste_Document IS
    TYPE T_CellDoc;

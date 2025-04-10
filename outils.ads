@@ -28,6 +28,6 @@ PACKAGE Outils IS
    PROCEDURE Creation_Login (Id : IN OUT T_Pers; Login : OUT T_Titre; Klogin : OUT Integer);
    PROCEDURE Init_Empreinte (Emp : OUT Integer);
    FUNCTION Calcul_Empreinte (Mdp : T_Mdp) RETURN Integer;
-
+   PROCEDURE Tiret (N : IN Natural);
 END Outils;
 

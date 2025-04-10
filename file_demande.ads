@@ -1,5 +1,5 @@
-WITH Ada.Characters.Handling, Ada.Text_IO, personnel,outils,liste_personnel;
-USE Ada.Characters.Handling, Ada.Text_Io, Personnel,Outils,Liste_Personnel;
+WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,liste_personnel,arbre_patients,outils,personnel,patients;
+USE Ada.Text_Io, Ada.Integer_Text_IO,ada.Characters.Handling,liste_personnel,arbre_patients,outils,personnel,patients;
 
 PACKAGE File_Demande IS
 
@@ -23,7 +23,11 @@ PROCEDURE AJout_Demande (D: IN OUT T_file_dem;Demande:IN out T_Demande);
 PROCEDURE Visu_1demande (Demande : IN T_Demande);
 PROCEDURE Visu_File_Demande (F: IN T_File_Dem);
 PROCEDURE Suppression_Demande (Demande : out T_Demande; F : IN OUT T_File_Dem;Erreur : OUT Boolean);
-PROCEDURE Traitement_demande(F: IN out T_File_Dem; L:T_Pteurpers);
-FUNCTION Recherche_Jm (F: t_file_dem; L: T_Pteurpers) RETURN Boolean;
+PROCEDURE Traitement_demande(F: IN out T_File_Dem; L:T_Pteurpers;a:in out t_arbre);
+FUNCTION Recherche_Jm (F: T_File_Dem; L: T_Pteurpers) RETURN Boolean;
+--FUNCTION Recherche_JmPat (A : T_Arbre; D:t_file_dem) RETURN Boolean;
+FUNCTION Recherche_Patlog (A : T_Arbre; login:t_titre) RETURN t_arbre;
+FUNCTION Recherche_FilePat (A:t_arbre;Login:T_Titre;D:T_File_Dem) RETURN Boolean;
+
 END File_Demande;
 

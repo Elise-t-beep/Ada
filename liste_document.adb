@@ -1,5 +1,5 @@
-WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,file_demande,liste_personnel, date,patients,arbre_patients,document;
-USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,file_demande,liste_personnel, date,patients,arbre_patients,document;
+WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,liste_personnel, date,patients,arbre_patients,document,date;
+USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,liste_personnel, date,patients,arbre_patients,document,date;
 
 PACKAGE BODY Liste_Document IS
    PROCEDURE Test (D:T_Document) IS

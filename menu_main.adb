@@ -3,9 +3,10 @@ USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,fi
 
 PACKAGE BODY Menu_Main IS
 --------------------------------------------------------------------------------------------------
-   PROCEDURE Menu_Demarrage (L: in out t_pteurpers; Date_Jour : out T_Date;D: in out T_File_Dem; demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers:in out t_personnel;choix: out integer) is
+   PROCEDURE Menu_Demarrage (L: in out t_pteurpers; Date_Jour : out T_Date;D: in out T_File_Dem; demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers:in out t_personnel;choix: out integer;a: in out t_arbre;pat: out t_patient) is
    BEGIN
       Initialisation_Pers(L);
+      Init_Arbre(A);
       LOOP
       New_Line;
       Put("Bienvenue");new_line;
@@ -14,9 +15,9 @@ PACKAGE BODY Menu_Main IS
       put_line("Voici la date du jour:");
       Affiche_Date(Date_Jour);NEW_line;
       Visualisation_Liste_Pers(L);
-      --Rajouter l'abre de patient quand ce sera fait
+      AFFICHage_prefixe(A);
       LOOP
-         Menu_Premier_Choix(L,Date_Jour,D,Demande,Login,Empreinte,Fonction,Cpt,id,pers,choix);
+         Menu_Premier_Choix(L,Date_Jour,D,Demande,Login,Empreinte,Fonction,Cpt,id,pers,choix,a,pat);
          IF Cpt = 3 THEN
             put_line("Erreur de connexion, redirection vers la page d'accueil.");
             EXIT;
@@ -31,8 +32,9 @@ PACKAGE BODY Menu_Main IS
       END LOOP;
    END Menu_Demarrage;
 -----------------------------------------------------------------------------------------------------
-   PROCEDURE Menu_Premier_Choix(L : in out T_Pteurpers; Date_Jour :in out T_Date; D: in out T_File_Dem;demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers: in out t_personnel;choix: OUT integer) IS
+   PROCEDURE Menu_Premier_Choix(L : in out T_Pteurpers; Date_Jour :in out T_Date; D: in out T_File_Dem;demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers: in out t_personnel;choix: OUT integer;a: in out t_arbre;pat: out t_patient) IS
       REP : Integer;
+      Ap:t_arbre;
    BEGIN
       cpt:=0;
       LOOP
@@ -59,19 +61,17 @@ PACKAGE BODY Menu_Main IS
                         IF Verif_Connexion (L,Login,Empreinte) THEN
                             Put_Line("Utilisateur trouve dans le personnel");
                                  IF Fonction = Medecin THEN
-                                    Put("Envoie vers le menu Personnel Medecin");
+                              Put("Envoie vers le menu Personnel Medecin");EXIT;
                                  ELSIF
                                     Fonction = Administrateur THEN
-                           Put("Envoie vers le menu Personnel Administrateur.");
-                           Menu_Admin(L,D,Id,Pers,Choix);
-                           IF Choix = 1 THEN
-                              EXIT;
-                           END IF;
-                                ELSIF
+                                    Put("Envoie vers le menu Personnel Administrateur.");
+                                    Menu_Admin(L,D,Id,Pers,Choix,A,Pat);
+                                       IF Choix = 1 THEN
+                                          EXIT;
+                                       END IF;
+                                 ELSIF
                                     Fonction = Secretaire THEN
-                                    Put("Envoie vers le menu Personnel Secretaire");
-                                 ELSE
-                                    Put("Erreur de saisie.");
+                              Put("Envoie vers le menu Personnel Secretaire");EXIT;
                                  END IF;
                         ELSE
                            Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
@@ -81,13 +81,29 @@ PACKAGE BODY Menu_Main IS
                               EXIT;
                         END IF;
                      ELSE
-                        Put_Line("Connexion impossible, une demande de mot de passe est en cours.");
+                        Put_Line("Connexion impossible, une demande de mot de passe est en cours.");EXIT;
                   END IF;
-                 ELSE
-                      --Recherche dans l'arbre avec boucle if
-                      put_line("En cours.");
-               END IF;
-
+                  ELSIF Fonction = Patient THEN
+                  IF Recherche_Patlog(A,Login) /=NULL THEN
+                     Ap:=Recherche_Patlog(A,Login);
+                     IF Recherche_Filepat (Ap,Login,D)=false THEN
+                        IF Verif_Connexion2 (A,Login,Empreinte) THEN
+                           Put_Line("Utilisateur trouve dans la patientele.");
+                           Put_Line("Envoie vers menu patient, en cours");
+                        ELSE
+                           Put_Line("Personne non presente dans la patientele, veuillez recommencez la connexion.");
+                           Cpt:=Cpt+1;
+                        END IF;
+                        IF Cpt = 3 THEN
+                              EXIT;
+                        END IF;
+                     ELSE
+                        Put_Line("Connexion impossible, une demande de mot de passe est en cours.");
+                     END IF;
+                  END IF;
+               ELSE
+                  put_line("Erreur de saisie.");
+                  END IF;
          WHEN 3 => Put_Line("Vous avez choisi le passage au lendemain.");
             Lendemain(Date_Jour);NEW_line;
             put_line("Voici la nouvelle date:");
@@ -109,10 +125,9 @@ END Menu_Premier_Choix;
       Put_Line("Veuillez indiquer votre fonction:");
       Get_Line(S,K);
       Fonction:=Role_P'Value(S(1..K));
-
    END Menu_Connexion;
 -----------------------------------------------------------------------------------------------------
-   PROCEDURE Menu_Creation_Compte ( L: IN OUT T_PteurPers) IS
+   PROCEDURE Menu_Creation_Compte ( L: IN OUT T_PteurPers;A: in out t_Arbre;pat:out t_patient) IS
       choix : integer;
    BEGIN
       Put_Line("Vous etes dans la creation d un compte utilisateur.");
@@ -122,15 +137,14 @@ END Menu_Premier_Choix;
             IF Choix = 1 THEN
                Ajout_Pers (L); exit;
             ELSIF Choix = 2 THEN
-                  Put_Line("En cours mais ajout patient");EXIT;
-                  -- en attente d'elise
+                  Ajout_pat(A,Pat);EXIT;
             ELSE
                put_line("Erreur de saisie, veuillez recommencer");
             END IF;
          END LOOP;
    END Menu_Creation_Compte;
 -----------------------------------------------------------------------------------------------------
-   PROCEDURE Menu_Admin (L: in out T_Pteurpers; F: in out T_File_Dem; id : out t_pers; pers: out t_personnel;Choix: out Integer) IS
+   PROCEDURE Menu_Admin (L: in out T_Pteurpers; F: in out T_File_Dem; id : out t_pers; pers: out t_personnel;Choix: out Integer;A:in out t_arbre;pat:out t_patient) IS
       Rep : Integer;
    BEGIN
      LOOP
@@ -159,14 +173,13 @@ END Menu_Premier_Choix;
 
       CASE Rep IS
          WHEN 1 =>
-            Menu_Creation_Compte(L);
+            Menu_Creation_Compte(L,A,Pat);
          WHEN 2 =>
             Visualisation_Liste_Pers(L);
          WHEN 3 =>
-            Put_Line("Pas fait");
-            -- Visu patient en attente d'elise
+            Affichage_prefixe(A);
          WHEN 4 =>
-            Traitement_Demande(F,L);
+            Traitement_Demande(F,L,a);
          WHEN 5 =>
             Put_Line("Pas fait");
          WHEN 6 =>

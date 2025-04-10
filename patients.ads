@@ -1,6 +1,5 @@
-WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,liste_document,file_demande,liste_personnel, document,date;
-USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,liste_document,Personnel,file_demande,liste_personnel,document, date;
-
+WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,liste_personnel,date,liste_document;
+USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,liste_personnel,date,liste_document;
 
 PACKAGE Patients IS
 

@@ -1,5 +1,5 @@
-WITH Ada.Characters.Handling, Ada.Text_IO, personnel,outils,liste_personnel,date,file_demande;
-USE Ada.Characters.Handling, Ada.Text_Io, personnel,outils,liste_personnel,date,file_demande;
+WITH Ada.Characters.Handling, Ada.Text_IO, personnel,outils,liste_personnel,date;
+USE Ada.Characters.Handling, Ada.Text_Io, personnel,outils,liste_personnel,date;
 
 PACKAGE Document IS
    -- Différents documents possibles
@@ -16,7 +16,6 @@ PACKAGE Document IS
    END RECORD;
    PROCEDURE Saisie_NATURE(Nature: OUT T_nature);
    PROCEDURE Visu_1document (D: IN T_Document);
-   PROCEDURE Saisie_1doc (D: OUT T_Document;L:t_pteurpers;date_jour:t_date;id:out t_pers;initialisation_id:integer);
 END Document;
 
 
