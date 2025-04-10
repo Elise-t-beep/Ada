@@ -82,6 +82,7 @@ PACKAGE BODY Liste_Personnel IS
    PROCEDURE Visualisation_Liste_Pers (L: IN T_Pteurpers)IS
       tmp:t_pteurpers:=L;
    BEGIN
+      put_line("Voici la liste du personnel:");
       WHILE Tmp/=NULL LOOP
          FOR I IN 1..100 LOOP
             Put('-');
@@ -106,6 +107,17 @@ PACKAGE BODY Liste_Personnel IS
       END IF;
       RETURN(Trouve);
    END Recherche_1pers;
+-----------------------------------------------------------------------------------------------------
+  FUNCTION Recherche_1pers2 (L: IN T_Pteurpers; Pers : IN T_Personnel) RETURN t_pteurpers IS
+   BEGIN
+      IF L= NULL THEN
+         RETURN(NULL);
+      ELSIF L.Personnel.Identite_Personnel = Pers.identite_personnel THEN
+         RETURN(L);
+      ELSE
+         RETURN(Recherche_1pers2(L.Persuiv,Pers));
+      END IF;
+   END Recherche_1pers2;
 -----------------------------------------------------------------------------------------------------
    PROCEDURE Ajout_Pers (L: OUT T_Pteurpers) IS
       Pers: t_personnel;
@@ -144,25 +156,29 @@ PACKAGE BODY Liste_Personnel IS
       RETURN(Trouve);
    END Verif_Connexion;
 -----------------------------------------------------------------------------------------------------
-   PROCEDURE Connexion_Pers ( L: T_Pteurpers;Login : T_Titre; Empreinte : Integer; Fonction : Role_P) IS
-   BEGIN
-      IF Verif_Connexion (L,Login,Empreinte) THEN
-         Put_Line("Utilisateur trouve dans le personnel");
-         IF Fonction = Medecin THEN
-            Put("Envoie vers le menu Personnel Medecin");
-         ELSIF
-               Fonction = Administrateur THEN
-            Put("Envoie vers le menu Personnel Secretaire");
-         ELSIF
-               Fonction = Secretaire THEN
-            Put("Envoie vers le menu Personnel Secretaire");
-         ELSE
-            Put("Menu patient ou erreur de saisie.");
-         END IF;
-      ELSE
-         Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
-      END IF;
-   END Connexion_Pers;
+--   PROCEDURE Connexion_Pers ( L: T_Pteurpers;Login : T_Titre; Empreinte : Integer; Fonction : Role_P) IS
+--   BEGIN
+--      LOOP
+--      IF Verif_Connexion (L,Login,Empreinte) THEN
+--            Put_Line("Utilisateur trouve dans le personnel");
+--         IF Fonction = Medecin THEN
+--               Put("Envoie vers le menu Personnel Medecin");
+--         ELSIF
+--               Fonction = Administrateur THEN
+--               Put("Envoie vers le menu Personnel Secretaire");
+--         ELSIF
+--               Fonction = Secretaire THEN
+--               Put("Envoie vers le menu Personnel Secretaire");
+--         ELSE
+--            Put("Erreur de saisie.");
+--         END IF;
+--      ELSE
+--            Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
+--            Cpt:=Cpt+1;
+--            IF Cpt = 3 THEN
+--
+--      END IF;
+--   END Connexion_Pers;
 -----------------------------------------------------------------------------------------------------
       PROCEDURE Supp_1Pers (L: IN OUT T_Pteurpers;Pers: OUT T_personnel; Erreur:OUT Boolean)IS
    BEGIN

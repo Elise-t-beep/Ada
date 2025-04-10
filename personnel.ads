@@ -19,6 +19,7 @@ PACKAGE Personnel IS
    PROCEDURE Saisie_NOMJM (Pers : OUT T_Personnel);
    PROCEDURE Saisie_Personnel (Pers : OUT T_Personnel);
    PROCEDURE Visu_1Personnel (Pers : IN T_Personnel);
+   PROCEDURE Saisie_Fonction1 (Pers : OUT T_Personnel);
 
 END Personnel;
 

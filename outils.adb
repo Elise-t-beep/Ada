@@ -39,35 +39,12 @@ PACKAGE BODY Outils IS
    PROCEDURE Saisie_Titre (M : OUT T_Titre; K :    OUT Integer) IS
       Ok : Boolean := False;
    BEGIN
+      put_line("Veuillez saisir le titre:");
       LOOP
          M := (OTHERS =>' ');
          Put ("Saisie : ");
          Get_Line (M, K);
          M := To_Upper (M);
-         --Vérification des caractères
-         FOR I IN M'First..K LOOP
-            CASE M(I) IS
-               WHEN 'A'..'Z' =>
-                  Ok := True;
-               WHEN '-'|'''|' ' =>
-                  IF I=M'First OR I=K THEN
-                     Put_Line ("Erreur de saisie, pas de caracteres speciaux aux extremites ");
-                     Ok := False;
-                     EXIT;
-                  ELSIF M(I-1)='-' OR M(I-1)=''' OR M(I-1)=' ' THEN
-                     Put_Line ("Erreur de saisie, pas de caracteres speciaux a la suite ");
-                     Ok := False;
-                     EXIT;
-                  END IF;
-               WHEN '_'=> Ok:=True;
-
-               WHEN OTHERS =>
-                  Put ("Erreur de saisie, caracteres non autorises ");
-                  Ok := False;
-                  EXIT;
-            END CASE;
-         END LOOP;
-         EXIT WHEN OK=True;
       END LOOP;
    END Saisie_Titre;
 
@@ -136,7 +113,6 @@ PACKAGE BODY Outils IS
    END Init_Empreinte;
 
 -----------------------------------------------------------------------------------------------------
-
 
 END Outils;
 

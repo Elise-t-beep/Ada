@@ -1,5 +1,5 @@
-WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils;
-USE Ada.Text_Io, Ada.Integer_Text_IO,ada.Characters.Handling,outils;
+WITH Ada.Text_IO, Ada.Integer_Text_IO,outils;
+USE Ada.Text_Io, Ada.Integer_Text_IO,outils;
 
 PACKAGE BODY Personnel IS
 
@@ -10,14 +10,14 @@ PACKAGE BODY Personnel IS
       Saisie_Mot(Pers.NomJM, Pers.K_Nomjm);
    END Saisie_Nomjm;
 -----------------------------------------------------------------------------------------------------
-   PROCEDURE Saisie_Fonction (Pers : OUT T_Personnel) IS
+   PROCEDURE Saisie_Fonction1 (Pers : OUT T_Personnel) IS
       S:String(1..15);
       K:integer;
    BEGIN
       Put_Line("Veuillez indiquer votre fonction:");
       Get_Line(S,K);
       Pers.Fonction:=Role_P'Value(S(1..K));
-   END Saisie_Fonction;
+   END Saisie_Fonction1;
 -----------------------------------------------------------------------------------------------------
    PROCEDURE Saisie_Personnel (Pers : OUT T_Personnel) IS
    BEGIN
@@ -25,7 +25,7 @@ PACKAGE BODY Personnel IS
      Saisie_Identite(Pers.Identite_Personnel);
      Creation_login(Pers.identite_personnel,pers.login,pers.klogin);
      Saisie_Nomjm(Pers);
-     Saisie_Fonction(Pers);
+     Saisie_Fonction1(Pers);
      Init_Empreinte (Pers.EmpreinteMDP);
    END SAISIE_Personnel;
 -----------------------------------------------------------------------------------------------------

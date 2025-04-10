@@ -1,0 +1,13 @@
+WITH Ada.Characters.Handling, Ada.Text_IO, personnel,outils,liste_personnel,date,file_demande,document;
+USE Ada.Characters.Handling, Ada.Text_Io, personnel,outils,liste_personnel,date,file_demande,document;
+
+PACKAGE Liste_Document IS
+   TYPE T_CellDoc;
+   TYPE T_PteurDoc IS ACCESS T_CellDoc ;
+   TYPE T_CellDoc IS RECORD
+      Document : T_Document;
+      Docsuiv : T_Pteurdoc;
+   END RECORD;
+   PROCEDURE Test (D:T_Document) ;
+END Liste_Document;
+

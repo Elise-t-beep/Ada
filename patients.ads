@@ -1,31 +1,26 @@
-WITH outils, Ada.Characters.Handling, Ada.Text_IO;
-USE outils, Ada.Characters.Handling, Ada.Text_Io;
+WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,liste_document,file_demande,liste_personnel, document,date;
+USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,liste_document,Personnel,file_demande,liste_personnel,document, date;
 
 
 PACKAGE Patients IS
 
-   -- extrait du package personnel
-   TYPE Role_P IS (Secretaire, Medecin, Administrateur, Patient);
-
-
    TYPE T_Patient IS RECORD
-      Num_Patient : Integer; --numero du patient dans l'arbre
       Identite_Patient : T_Pers;
       Login : T_Titre;
       Klogin : Integer;
-      NomJM : T_Titre;
+      NomJM : T_mot; --modif faite 10/04 11H
       K_nomJM : integer;
       EmpreinteMDP : integer;
       Fonction : Role_P;
-     -- Document : T_pteurDoc; --(appel package doc?)
+      Document : T_pteurDoc; --(appel package doc)
       DemandeMDP : Boolean;
       --ajout mdp tout court?
    END RECORD;
 
-
-   PROCEDURE Saisie_NOMJM (Pat : OUT T_Patient);
-   PROCEDURE Saisie_Fonction (Pat : OUT T_Patient);
-
+   PROCEDURE Saisie_NOMJM2 (Pat : OUT T_Patient);
+   PROCEDURE Saisie_Fonction2 (Pat : OUT T_Patient);
+   PROCEDURE Saisie_Patient (Pat : OUT T_Patient);
+   PROCEDURE Visu_1Patient (Pat : IN T_Patient);
 END Patients;
 
 

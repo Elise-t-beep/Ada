@@ -71,12 +71,17 @@ PACKAGE BODY File_demande IS
       trouve: boolean;
    BEGIN
       WHILE Tmp/=NULL LOOP
+         IF F.tetedem/=null then
          IF F.Tetedem.Demande.Nomjm = tmp.Personnel.Nomjm THEN
             Trouve:=True;
          ELSE
             Trouve:=False;
 
+            END IF;
+         ELSE
+            Trouve:=False;
          END IF;
+
          tmp:=tmp.persuiv;
       END LOOP;
          RETURN (trouve);
