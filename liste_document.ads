@@ -9,5 +9,7 @@ PACKAGE Liste_Document IS
       Docsuiv : T_Pteurdoc;
    END RECORD;
    PROCEDURE Test (D:T_Document) ;
+   PROCEDURE Visu_Liste_Doc (ListeD : T_Pteurdoc);
+   PROCEDURE Ajout_Liste_Doc (ListeD : OUT T_Pteurdoc;D:T_Document);
 END Liste_Document;
 

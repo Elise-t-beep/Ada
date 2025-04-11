@@ -16,6 +16,8 @@ PACKAGE Document IS
    END RECORD;
    PROCEDURE Saisie_NATURE(Nature: OUT T_nature);
    PROCEDURE Visu_1document (D: IN T_Document);
+   PROCEDURE Saisie_1doc (D: out T_Document;Initialisation_id:integer;date_jour: out t_date;Pers: out t_personnel;L:t_pteurpers);
+
 END Document;
 
 

@@ -1,12 +1,12 @@
-WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,file_demande,liste_personnel, date;
-USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,file_demande,liste_personnel, date;
+WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,file_demande,liste_personnel, date,liste_document,arbre_patients;
+USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,file_demande,liste_personnel, date,liste_document,arbre_patients;
 
 PACKAGE BODY Menu_Main IS
 --------------------------------------------------------------------------------------------------
    PROCEDURE Menu_Demarrage (L: in out t_pteurpers; Date_Jour : out T_Date;D: in out T_File_Dem; demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers:in out t_personnel;choix: out integer;a: in out t_arbre;pat: out t_patient) is
    BEGIN
       Initialisation_Pers(L);
-      Init_Arbre(A);
+      Init_Arbre(A,L);
       LOOP
       New_Line;
       Put("Bienvenue");new_line;
@@ -83,10 +83,11 @@ PACKAGE BODY Menu_Main IS
                      ELSE
                         Put_Line("Connexion impossible, une demande de mot de passe est en cours.");EXIT;
                   END IF;
+
                   ELSIF Fonction = Patient THEN
                   IF Recherche_Patlog(A,Login) /=NULL THEN
-                     Ap:=Recherche_Patlog(A,Login);
-                     IF Recherche_Filepat (Ap,Login,D)=false THEN
+
+                     IF Recherche_Filepat (A,Login,D)THEN
                         IF Verif_Connexion2 (A,Login,Empreinte) THEN
                            Put_Line("Utilisateur trouve dans la patientele.");
                            Put_Line("Envoie vers menu patient, en cours");
@@ -103,7 +104,7 @@ PACKAGE BODY Menu_Main IS
                   END IF;
                ELSE
                   put_line("Erreur de saisie.");
-                  END IF;
+            END IF;
          WHEN 3 => Put_Line("Vous avez choisi le passage au lendemain.");
             Lendemain(Date_Jour);NEW_line;
             put_line("Voici la nouvelle date:");
@@ -179,7 +180,7 @@ END Menu_Premier_Choix;
          WHEN 3 =>
             Affichage_prefixe(A);
          WHEN 4 =>
-            Traitement_Demande(F,L,a);
+            Traitement_Demande(F,L,a,A.Patient.login);
          WHEN 5 =>
             Put_Line("Pas fait");
          WHEN 6 =>

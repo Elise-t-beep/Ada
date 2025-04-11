@@ -1,6 +1,5 @@
-WITH Ada.Text_IO, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,Liste_Personnel,Date,Liste_Document, ada.IO_Exceptions;
-USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,Liste_Personnel,Date,Liste_Document;
-
+WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,liste_personnel,date,liste_document;
+USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,liste_personnel,date,liste_document;
 
 PACKAGE Patients IS
 
@@ -22,4 +21,6 @@ PACKAGE Patients IS
    PROCEDURE Saisie_Patient (Pat : OUT T_Patient);
    PROCEDURE Visu_1Patient (Pat : IN T_Patient);
 END Patients;
+
+
 
