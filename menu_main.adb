@@ -43,7 +43,7 @@ PACKAGE BODY Menu_Main IS
       Put_line("1-Demander un nouveau mot de passe.");
       Put_line("2-Se connecter.");
       Put_line("3- Passer au lendemain.");
-      Put_line("Qu est ce que vous voulez faire ? 1/2/3");
+      Put_line("Que souhaitez-vous faire ? 1/2/3");
          Get(Rep);Skip_Line;
          IF REP < 4 AND Rep > 0 THEN
             EXIT;
@@ -94,6 +94,7 @@ PACKAGE BODY Menu_Main IS
                         IF Verif_Connexion2 (A,Login,Empreinte) THEN --verification des informations de connexion
                            Put_Line("Utilisateur trouve dans la patientele.");
                            Put_Line("Envoie vers menu patient, en cours");
+                              Menu_Patient (A, Pat, D, Login); --penser aux variables
                         ELSE
                            Put_Line("Personne non presente dans la patientele, veuillez recommencez la connexion.");
                            Cpt:=Cpt+1;
@@ -141,7 +142,7 @@ END Menu_Premier_Choix;
             IF Choix = 1 THEN
                Ajout_Pers (L); exit;
             ELSIF Choix = 2 THEN
-                  Nouveau_pat(A);EXIT; -- Dire à Elise que modif faite 17H22
+                  Nouveau_pat(A);EXIT;
             ELSE
                put_line("Erreur de saisie, veuillez recommencer");
             END IF;
@@ -258,7 +259,58 @@ END Menu_Admin;
 
          END CASE;
       END LOOP;
-   END MENU_MEDECIN;
+     END MENU_MEDECIN;
+
+---------------------------------------------------------------------------------------------
+-- completer les variables
+--verifier ou on recupere l'id du patient, sinon le faire
+     PROCEDURE Menu_Patient (A : IN OUT T_Arbre; Pat : OUT T_Patient; D: IN OUT T_Document; Login : IN OUT T_Titre) IS
+        Choix : Character;
+        Id_Doc : Integer;
+     BEGIN
+        --recherche du patient dans arbre a partir de son login de connexion
+--        IF Recherche_Patlog (A, Login) THEN
+--           A:=Cpt;
+--           Pat := A.Patient;
+        A := Recherche_Patlog (A, Login);
+        IF A /= NULL THEN
+           Pat := A.Patient;
+        END IF;
+        Put ("Voici l'identite du patient connecte : ");
+        Put (Pat.Login);
+        New_Line;
+--        END IF;
+        --recuperation du pt du patient
+--        A := Cpt;
+        --verif de t_patient
+--        Pat := A.Patient;
+        LOOP
+           New_Line;
+           Put_Line ("Menu Patientele : ");
+           Put_Line ("1, acces a la liste de vos documents");
+           Put_Line ("2, acces en lecture a l'un de vos documents");
+           Put_Line ("3, deconnexion");
+           Get (Choix); Skip_Line;
+           CASE Choix IS
+              WHEN '1' =>
+                 Put_line ("Liste des documents du patient : ");
+                 Visu_Doc_Pat(Pat);
+              WHEN '2' =>
+                 Put ("Saisie de l'identifiant du document à visualiser : ");
+                 Get (Id_Doc);
+                 D.Id := Id_Doc;
+                 Visu_1document (D);
+              WHEN '3' =>
+                 EXIT;
+              WHEN OTHERS => Put_Line ("Merci de faire votre choix dans les options proposees");
+           END CASE;
+        END LOOP;
+     END Menu_Patient;
+
+----------------------------------------------------------------------------------------------
+
+
+
+
 
 END Menu_Main;
-

@@ -1,5 +1,5 @@
-WITH Outils, Patients, Arbre_Patients, Ada.Text_Io, Ada.Integer_Text_IO, Ada.Characters.Handling;
-USE Outils, Patients, Arbre_Patients, Ada.Text_Io, Ada.Integer_Text_IO, Ada.Characters.Handling;
+WITH file_demande, menu_main,Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,liste_personnel, document,patients,arbre_patients,date,liste_document;
+USE file_demande, menu_main,Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,liste_personnel,document,patients,arbre_patients,date,liste_document;
 
 
 PROCEDURE Main IS
@@ -9,7 +9,23 @@ PROCEDURE Main IS
    Emp : Integer;
    Mdp : T_Mdp;
    T : T_Titre;
-   Pat : T_Arbre;
+   A : T_Arbre;
+   Pat : T_Patient;
+   L: T_Pteurpers;
+   --D : T_Document;
+   Login : T_Titre;
+   Date_Jour : T_Date;
+   N: T_File_Dem; --D
+   Demande: T_Demande;
+   Empreinte: Integer;
+   Fonction: Role_P;
+   Cpt: Integer;
+   Pers: T_Personnel;
+   Choix: Integer;
+
+
+
+
 
 BEGIN
    Put ("------------------------");
@@ -31,8 +47,32 @@ BEGIN
 --   Put (T);
    Put ("test packages arbre_patients");
    New_Line;
-   Init_Arbre (Pat);
-   Affichage_Prefixe (Pat);
+   Init_Arbre (A, L);
+   Affichage_Prefixe (A);
+--   Nouveau_Pat (A);
+--   Affichage_Prefixe (A);
+--   Suppression_Pat (A);
+--   Affichage_Prefixe (A);
+--   Put_Line ("test package liste_personnel");
+--   Initialisation_Pers (L);
+--   Visualisation_Liste_Pers (L);
+--   Ajout_Pers (L);
+--   Visualisation_Liste_Pers (L);
+   Menu_Demarrage (L, Date_Jour,N, Demande, Login, Empreinte, Fonction, Cpt, Id, Pers, Choix, A, Pat);
+
+
+
+
+
+
+--   PROCEDURE Init_Arbre (Pat : IN OUT T_Arbre);
+--   PROCEDURE Affichage_Prefixe (Pat : IN T_Arbre);
+--   FUNCTION Homonyme (A: IN T_Arbre; Pat : IN T_Pers) RETURN Boolean;
+--   PROCEDURE Ajout_Pat (A: IN OUT T_Arbre; Pat: OUT T_Patient);
+--   FUNCTION Recherche_Pat (A : T_Arbre; Pat : T_Patient) RETURN Boolean;
+----   PROCEDURE Supp_Patient (A : IN OUT T_Arbre; Id : OUT T_Pers; Pat : T_Patient);
+--   PROCEDURE Saisie_1doc (D: OUT T_Document;L:t_pteurpers;Date_jour: t_date;Id: out t_pers;initialisation_ID:integer);
+--   FUNCTION Verif_Connexion2 (A : IN T_Arbre;Login:T_Titre;Empreinte:Integer) RETURN Boolean ;
 
 
 
