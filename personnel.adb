@@ -14,9 +14,20 @@ PACKAGE BODY Personnel IS
       S:String(1..15);
       K:integer;
    BEGIN
-      Put_Line("Veuillez indiquer votre fonction:");
-      Get_Line(S,K);
-      Pers.Fonction:=Role_P'Value(S(1..K));
+      LOOP
+         BEGIN
+            Put_Line("Veuillez indiquer votre fonction:");
+            Get_Line(S,K);
+            Pers.Fonction:=Role_P'Value(S(1..K));
+            IF Pers.Fonction = Patient THEN
+               Put ("Vous etes au niveau du personnel, vous ne pouvez pas etre patient");
+               New_Line;
+            END IF;
+            EXIT WHEN Pers.Fonction = Secretaire OR Pers.Fonction = Medecin OR Pers.Fonction = Administrateur;
+         EXCEPTION
+            WHEN Constraint_Error => Put_Line ("Cette fonction n'existe pas, recommencez");
+         END;
+      END LOOP;
    END Saisie_Fonction1;
 -----------------------------------------------------------------------------------------------------
    PROCEDURE Saisie_Personnel (Pers : OUT T_Personnel) IS

@@ -9,14 +9,29 @@ PACKAGE BODY Patients IS
       Saisie_Mot(Pat.NomJM, Pat.K_Nomjm);
    END Saisie_Nomjm2;
    ----------------------------------------------------------------------------
+
    PROCEDURE Saisie_Fonction2 (Pat : OUT T_Patient) IS
       S:String(1..15);
       K:integer;
    BEGIN
-      Put_Line("Veuillez indiquer votre fonction:");
-      Get_Line(S,K);
-      Pat.Fonction:=Role_P'Value(S(1..K));
+      LOOP
+         BEGIN
+            Put_Line("Veuillez indiquer votre fonction:");
+            Get_Line(S,K);
+            Pat.Fonction:=Role_P'Value(S(1..K));
+            IF Pat.Fonction /= Patient THEN
+               Put ("erreur de choix de fonction, veuillez choisir patient");
+               New_Line;
+            END IF;
+            EXIT WHEN Pat.Fonction = Patient;
+         EXCEPTION
+            WHEN Constraint_Error => Put_Line ("Cette fonction n'existe pas, recommencez");
+         END;
+      END LOOP;
+      --Pat.Fonction:=Role_P'Value(S(1..K));
    END Saisie_Fonction2;
+
+
 -----------------------------------------------------------------------------------------
    PROCEDURE Saisie_Patient (Pat : OUT T_Patient) IS
    BEGIN
@@ -24,14 +39,7 @@ PACKAGE BODY Patients IS
       Creation_Login(Pat.Identite_Patient,Pat.Login,Pat.Klogin);
       Saisie_Nomjm2(Pat);
       Init_Empreinte (Pat.EmpreinteMDP);
-      LOOP -- rajout de cette boucle de securite
       Saisie_Fonction2(Pat);
-         IF Pat.Fonction /= Patient THEN
-         Put ("erreur de saisie, veuillez choisir patient");
-         ELSE
-            EXIT;
-         END IF;
-      END LOOP;
    END Saisie_Patient;
 -----------------------------------------------------------------------------------------
    PROCEDURE Visu_1Patient (Pat : IN T_Patient) IS
@@ -52,5 +60,5 @@ PACKAGE BODY Patients IS
       Put_Line("Les documents de ce patient:");
       New_Line;
    END VISU_1Patient;
-END Patients;
 
+END Patients;

@@ -119,6 +119,7 @@ PACKAGE BODY Liste_Personnel IS
       END IF;
    END Recherche_1pers2;
 -----------------------------------------------------------------------------------------------------
+--possibilité d'optimiser la procedure? (verif homonyme avant de remplir toutes les infos ?)
    PROCEDURE Ajout_Pers (L: OUT T_Pteurpers) IS
       Pers: t_personnel;
    BEGIN
@@ -128,16 +129,27 @@ PACKAGE BODY Liste_Personnel IS
       New_line;
       put_line("Creation d un compte pour un nouvel employe:");
       Put_line("Quelle personne voulez-vous ajouter?");
-      Saisie_Identite(Pers.Identite_Personnel);
-      put_line("Verification si homonyme dans les employes");
+--      Saisie_Identite(Pers.Identite_Personnel);
+--      put_line("Verification si homonyme dans les employes");
+--      IF Recherche_1PERS(L,Pers.identite_personnel) THEN
+--         Put_line("Ajout Impossible car Homonyme");
+--      ELSE
+         --put_line("Cette personne n a pas d'homonyme, procedure d'ajout :");
+      Saisie_Personnel(Pers);
 
-      IF Recherche_1PERS(L,Pers.identite_personnel) THEN
-         Put_line("Ajout Impossible car Homonyme");
+      IF Recherche_1PERS (L, Pers.Identite_Personnel) THEN
+
+         Put_Line ("Ajout impossible, homonyme present");
+
       ELSE
-         put_line("Cette personne n a pas d'homonyme, procedure d'ajout :");
-         Saisie_Personnel(Pers);
+
+
          L:=NEW T_CellPers'(Pers,L);
+
+
       END IF;
+
+
    END Ajout_Pers;
 -----------------------------------------------------------------------------------------------------
 -- Pas encore testée la verif connexion je savais pas comment faire pour l'instant

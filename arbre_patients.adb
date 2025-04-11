@@ -3,6 +3,7 @@ USE patients, Ada.Characters.Handling, Ada.Text_IO, Ada.Integer_Text_IO;
 
 PACKAGE BODY Arbre_Patients IS
 -----------------------------------------------------------------------------------------------------
+--prendre les trucs de Lydia
    PROCEDURE Init_Arbre (Pat : IN OUT T_Arbre) IS
       P1 : T_Patient;
       P2 : T_Patient;
@@ -38,9 +39,9 @@ PACKAGE BODY Arbre_Patients IS
       P2.FONCTION:=Patient;
       Pat.Fg := NEW T_Noeud'(P2, NULL, NULL);
 
-      P3.Identite_Patient.Nom := "Valjean"&(8..20=>' ');
+      P3.Identite_Patient.Nom := "VALJEAN"&(8..20=>' ');
       P3.Identite_Patient.Knom := 7;
-      P3.Identite_Patient.Prenom := "Jean"&(5..20=>' ');
+      P3.Identite_Patient.Prenom := "JEAN"&(5..20=>' ');
       P3.Identite_Patient.Kprenom := 4;
       P3.Login := "VALJEAN_JEAN"&(13..50=>' ');
       P3.Klogin := 12;
@@ -97,92 +98,176 @@ PACKAGE BODY Arbre_Patients IS
          Put (Pat.Patient.EmpreinteMDP);
          New_Line;
          Tiret (50);
+         New_Line;
          Affichage_Prefixe (Pat.Fg);
          Affichage_Prefixe (Pat.Fd);
       END IF;
    END Affichage_Prefixe;
+
 ----------------------------------------------------------------------
-   PROCEDURE Ajout_Pat (A: IN OUT T_Arbre; Pat: out T_Patient) IS
+
+   PROCEDURE Ajout_Pat (A : IN OUT T_Arbre; Pat : IN T_Patient) is
    BEGIN
-      Put_Line ("Ajout d'un patient");
-      New_Line;
-      Put_Line ("Saisie de l'identite du patient à ajouter : ");
-      Saisie_Identite (Pat.identite_patient);
-      New_Line;
-      IF A = NULL THEN
-         Saisie_Patient (Pat);
-         A := NEW T_Noeud'(Pat, NULL, NULL);
+      IF Recherche_Pat_Bl (A, Pat) THEN
+         Put_Line ("ajout impossible, homonyme present");
       ELSE
-         IF Pat.Identite_Patient.Nom < A.Patient.Identite_Patient.Nom THEN
-            Ajout_Pat (A.Fg, Pat);
-         ELSIF Pat.Identite_Patient.Nom = A.Patient.Identite_Patient.Nom THEN
-            IF Pat.Identite_Patient.Prenom < A.Patient.Identite_Patient.Nom THEN
-               Ajout_Pat (A.Fg, Pat);
-            ELSIF Pat.Identite_Patient.Prenom = A.Patient.Identite_Patient.Prenom THEN
-               Put ("Homonyme present, ajout impossible");
-            ELSE
-               Ajout_Pat (A.Fd, Pat);
-            END IF;
+         IF A = NULL THEN
+            A := NEW T_Noeud'(Pat, NULL, NULL);
          ELSE
-            Ajout_Pat (A.Fd, Pat);
+            IF Pat.Identite_Patient.Nom < A.Patient.Identite_Patient.Nom THEN
+               IF A.Fg = NULL THEN
+                  A.Fg := NEW T_Noeud'(Pat, NULL, NULL);
+               ELSE
+                  Ajout_Pat (A.Fg, Pat);
+               END IF;
+            ELSIF Pat.Identite_Patient.Nom = A.Patient.Identite_Patient.Nom THEN
+               IF Pat.Identite_Patient.Prenom < A.Patient.Identite_Patient.Prenom THEN
+                  IF A.Fg = NULL THEN
+                     A.Fg := NEW T_Noeud'(Pat, NULL, NULL);
+                  ELSE
+                     Ajout_Pat (A.Fg, Pat);
+                  END IF;
+               ELSE
+                  IF A.Fd = NULL THEN
+                     A.Fd := NEW T_Noeud'(Pat, NULL, NULL);
+                  ELSE
+                     Ajout_Pat (A.Fd, Pat);
+                  END IF;
+               END IF;
+            ELSE
+               IF A.Fd = NULL THEN
+                  A.Fd := NEW T_Noeud'(Pat, NULL, NULL);
+               ELSE
+                  Ajout_Pat (A.Fd, Pat);
+               END IF;
+            END IF;
          END IF;
       END IF;
    END Ajout_Pat;
+
 ----------------------------------------------------------------------
---faire une saisie de l'id pour la recherche
-   FUNCTION Recherche_Pat (A : T_Arbre; Pat : T_Patient) RETURN Boolean IS
+
+   PROCEDURE Nouveau_Pat (A: IN OUT T_Arbre) is
+      Pat : T_Patient;
+   BEGIN
+      Put_Line ("Ajout d'un patient");
+      Saisie_Patient (Pat);
+      Ajout_Pat (A, Pat);
+   END Nouveau_Pat;
+
+----------------------------------------------------------------------
+
+   FUNCTION Recherche_Pat_Bl (A : T_Arbre; Pat : T_Patient) RETURN Boolean IS
    BEGIN
       IF A = NULL THEN
          RETURN (False);
-      ELSIF A.Patient.identite_patient.nom = Pat.identite_patient.nom THEN
-         RETURN (True);
+      ELSIF A.Patient.Identite_Patient.Nom = Pat.Identite_Patient.Nom THEN
+         IF A.Patient.Identite_Patient.Prenom = Pat.Identite_Patient.Prenom THEN
+            RETURN (True);
+         ELSIF A.Patient.Identite_Patient.Prenom < Pat.Identite_Patient.Prenom THEN
+            RETURN (Recherche_Pat_Bl (A.Fd, Pat));
+         ELSE
+            RETURN (Recherche_Pat_Bl (A.Fg, Pat));
+         END IF;
       ELSIF Pat.identite_patient.nom < A.Patient.identite_patient.nom THEN
-         RETURN (Recherche_Pat (A.Fg, Pat));
+         RETURN (Recherche_Pat_Bl (A.Fg, Pat));
       ELSE
-         RETURN (Recherche_Pat (A.Fd, Pat));
+         RETURN (Recherche_Pat_Bl (A.Fd, Pat));
       END IF;
-   END Recherche_Pat;
+   END Recherche_Pat_Bl;
 
 ----------------------------------------------------------------------
---   PROCEDURE Supp_Patient (A : IN OUT T_Arbre; Id : OUT T_Pers; Pat : T_Patient) IS
---   BEGIN
---      Put ("Suppression d'un patient");
---      New_Line;
---      Put ("saisie de l'identite du patient à supprimer : nom et prenom : ");
---      Saisie_Identite (Id);
---      IF A /= NULL THEN
---         IF Recherche_Pat (A, Id) THEN
---            IF A.Fg = NULL THEN
---               A := A.Fd;
---            ELSIF A.Fd = NULL THEN
---               A := A.Fg;
---            ELSE
---               Put("noeud double, comment faire?");
---            END IF;
---         ELSE
---            Recherche_Pat (A.Fg, Id);
---            Recherche_Pat (A.Fd, Id);
---         END IF;
---      END IF;
---   END Supp_Patient;
-----------------------------------------------------------------------
-   FUNCTION Homonyme (A: IN T_Arbre; Pat : IN T_Pers) RETURN Boolean IS
-      Trouve : Boolean;
+
+   FUNCTION Recherche_Pat_Pt (A : T_Arbre; Pat : T_Patient) RETURN T_Arbre IS
    BEGIN
-      IF A/= NULL THEN
-         IF A.Patient.Identite_Patient = Pat THEN
-            Trouve := True;
+      IF A = NULL THEN
+         RETURN (NULL);
+      ELSIF A.Patient.Identite_Patient = Pat.Identite_Patient THEN
+         RETURN (A);
+      ELSIF A.Patient.Identite_Patient.Nom < Pat.Identite_Patient.Nom THEN
+         RETURN (Recherche_Pat_Pt (A.Fd, Pat));
+      ELSIF A.Patient.Identite_Patient.Nom = Pat.Identite_Patient.Nom THEN
+         IF A.Patient.Identite_Patient.Prenom < Pat.Identite_Patient.Prenom THEN
+            RETURN (Recherche_Pat_Pt (A.Fd, Pat));
          ELSE
-            Trouve:=Homonyme(A.Fg,Pat);
-            IF Trouve = False THEN
-               Trouve :=Homonyme(A.Fd,Pat);
-            END IF;
+            RETURN (Recherche_Pat_Pt (A.Fg, Pat));
          END IF;
       ELSE
-         Trouve:=False;
+         RETURN (Recherche_Pat_Pt (A.Fg, Pat));
       END IF;
-      RETURN(Trouve);
-   END Homonyme;
+   END Recherche_Pat_Pt;
+
+----------------------------------------------------------------------
+
+   PROCEDURE Traite_Max (A: IN OUT T_Arbre; Max : OUT T_Patient) IS
+   BEGIN
+      IF A.Fd = NULL THEN
+         Max := A.Patient;
+         A := A.Fg;
+      ELSE
+         Traite_Max (A.Fd, Max);
+      END IF;
+   END Traite_Max;
+
+
+----------------------------------------------------------------------
+--ajouter un "if not find put "patient non existant?"
+   PROCEDURE Supp (A : IN OUT T_Arbre; Pat : T_Patient) IS
+   BEGIN
+      IF A /= NULL THEN
+         IF Pat.Identite_Patient.Nom < A.Patient.Identite_Patient.Nom THEN
+            Supp (A.Fg, Pat);
+         ELSIF Pat.Identite_Patient.Nom > A.Patient.Identite_Patient.Nom THEN
+            Supp (A.Fd, Pat);
+         ELSIF Pat.Identite_Patient.Nom = A.Patient.Identite_Patient.Nom THEN
+            IF Pat.Identite_Patient.Prenom < A.Patient.Identite_Patient.Prenom THEN
+               Supp (A.Fg, Pat);
+            ELSIF Pat.Identite_Patient.Prenom > A.Patient.Identite_Patient.Prenom THEN
+               Supp (A.Fd, Pat);
+            ELSE
+               IF A.Fg = NULL THEN
+                  A := A.Fd;
+               ELSIF A.Fd = NULL THEN
+                  A := A.Fg;
+               ELSE
+                  Traite_Max (A.Fg, A.Patient);
+               END IF;
+            END IF;
+         END IF;
+      END IF;
+   END Supp;
+
+--------------------------------------------------------------------
+
+   PROCEDURE Suppression_Pat (A : IN OUT T_Arbre) IS
+      Pat : T_Patient;
+   BEGIN
+      Put_Line ("Suppression d'un patient");
+      Saisie_Identite (Pat.Identite_Patient);
+      Supp (A, Pat);
+   END Suppression_Pat;
+
+--------------------------------------------------------------------
+
+-- inutile car recherche?
+--   FUNCTION Homonyme (A: IN T_Arbre; Pat : IN T_Pers) RETURN Boolean IS
+--      Trouve : Boolean;
+--   BEGIN
+--      IF A/= NULL THEN
+--         IF A.Patient.Identite_Patient = Pat THEN
+--            Trouve := True;
+--         ELSE
+--            Trouve:=Homonyme(A.Fg,Pat);
+--            IF Trouve = False THEN
+--               Trouve :=Homonyme(A.Fd,Pat);
+--            END IF;
+--         END IF;
+--      ELSE
+--         Trouve:=False;
+--      END IF;
+--      RETURN(Trouve);
+--   END Homonyme;
+
 ----------------------------------------------------------------------
 PROCEDURE Saisie_1doc (D: OUT T_Document;L:t_pteurpers;Date_jour: t_date;Id: out t_pers;initialisation_ID:integer) IS
       Pers,PersMed :T_Personnel;
@@ -248,4 +333,3 @@ FUNCTION Verif_Connexion2 (A : IN T_arbre;Login:T_titre;Empreinte:integer) RETUR
 ----------------------------------------------------------------------
 
 END Arbre_Patients;
-
