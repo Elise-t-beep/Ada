@@ -61,7 +61,9 @@ PACKAGE BODY Menu_Main IS
                         IF Verif_Connexion (L,Login,Empreinte) THEN
                             Put_Line("Utilisateur trouve dans le personnel");
                                  IF Fonction = Medecin THEN
-                              Put("Envoie vers le menu Personnel Medecin");EXIT;
+                           Put("Envoie vers le menu Personnel Medecin");
+                           --en attente du menu medecin
+                           EXIT;
                                  ELSIF
                                     Fonction = Administrateur THEN
                                     Put("Envoie vers le menu Personnel Administrateur.");
@@ -71,24 +73,25 @@ PACKAGE BODY Menu_Main IS
                                        END IF;
                                  ELSIF
                                     Fonction = Secretaire THEN
-                              Put("Envoie vers le menu Personnel Secretaire");EXIT;
+                           Put("Envoie vers le menu Personnel Secretaire");
+                           --en attente du menu secretaire
+                           EXIT;
                                  END IF;
                         ELSE
                            Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
                            Cpt:=Cpt+1;
                         END IF;
-                        IF Cpt = 3 THEN
+                        IF Cpt = 3 THEN --retour au menu de demarrage
                               EXIT;
                         END IF;
                      ELSE
-                        Put_Line("Connexion impossible, une demande de mot de passe est en cours.");EXIT;
+                        Put_Line("Connexion impossible, une demande de mot de passe est en cours.");EXIT; --retour a la connexion
                   END IF;
 
                   ELSIF Fonction = Patient THEN
-                  IF Recherche_Patlog(A,Login) /=NULL THEN
-
-                     IF Recherche_Filepat (A,Login,D)THEN
-                        IF Verif_Connexion2 (A,Login,Empreinte) THEN
+                  IF Recherche_Patlog(A,Login) /=NULL THEN -- recherche du patient dans l'arbre
+                     IF Recherche_Filepat (A,Login,D)THEN --verification si patient pas en attente d un nouveau mdp
+                        IF Verif_Connexion2 (A,Login,Empreinte) THEN --verification des informations de connexion
                            Put_Line("Utilisateur trouve dans la patientele.");
                            Put_Line("Envoie vers menu patient, en cours");
                         ELSE
@@ -138,7 +141,7 @@ END Menu_Premier_Choix;
             IF Choix = 1 THEN
                Ajout_Pers (L); exit;
             ELSIF Choix = 2 THEN
-                  Ajout_pat(A,Pat);EXIT;
+                  Nouveau_pat(A);EXIT; -- Dire à Elise que modif faite 17H22
             ELSE
                put_line("Erreur de saisie, veuillez recommencer");
             END IF;
@@ -184,7 +187,9 @@ END Menu_Premier_Choix;
          WHEN 5 =>
             Put_Line("Pas fait");
          WHEN 6 =>
-            Put_Line("Pas fait");
+            Put_Line("Voici ceux non archives:");
+               Visu_All_Document(A);
+               put_line("Voici ceux archives:");
          WHEN 7 =>
             Put_Line("Pas fait");
          WHEN 8 =>
@@ -208,8 +213,52 @@ END Menu_Premier_Choix;
 
          END CASE;
       END LOOP;
-
 END Menu_Admin;
+-----------------------------------------------------------------------------------------------------
+   PROCEDURE Menu_Medecin (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: OUT T_Document;Initialisation_Id:Integer;Date_Jour: OUT T_Date;Pers:OUT T_Personnel;L:T_Pteurpers)IS
+     rep:integer;
+     BEGIN
+      LOOP
+         LOOP
+      Put_line("Voici ce que vous pouvez faire:");
+      Put_line("1-Ajouter un document pour un patient.");
+      Put_line("2-Modifier un document.");
+      Put_Line("3- Afficher vos documents (non archives).");
+      Put_Line("4- Acceder a un document (lecture).");
+      Put_Line("5- Visualiser les titres des documents d un patient.");
+      Put_Line("6- Visualiser l'ensemble des documents du centre.");
+      Put_Line("7- Se deconnecter.");
+
+      Put_line("Qu est ce que vous voulez faire ? Veuillez saisir le numero :");
+      Get(Rep);Skip_Line;
+         IF REP < 8 AND Rep > 0 THEN
+            EXIT;
+         ELSE
+            Put_Line("Erreur de saisie veuillez recommencer.");
+         END IF;
+         END LOOP;
+      CASE Rep IS
+         WHEN 1 =>
+            Ajout_doc_med(A,ListeD,D,Initialisation_id,date_jour,pers,L);
+         WHEN 2 =>
+           Put_Line("Pas fait");
+         WHEN 3 =>
+            Put_Line("Pas fait");
+         WHEN 4 =>
+            Put_Line("Pas fait");
+         WHEN 5 =>
+            Put_Line("Pas fait");
+         WHEN 6 =>
+            Put_Line("Voici ceux non archives:");
+               Visu_All_Document(A);
+               put_line("Voici ceux archives:");
+         WHEN 7 =>
+                 EXIT;
+         WHEN OTHERS => Put_line("Erreur de saisie.Veuillez recommencer.");
+
+         END CASE;
+      END LOOP;
+   END MENU_MEDECIN;
 
 END Menu_Main;
 

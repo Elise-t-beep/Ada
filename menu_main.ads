@@ -7,6 +7,6 @@ PROCEDURE Menu_Demarrage (L: IN OUT T_Pteurpers;Date_Jour :OUT T_Date;D: in out 
 PROCEDURE Menu_Admin (L: in out T_Pteurpers; F: in out T_File_Dem ; id :out t_pers; pers: out t_personnel;Choix: out Integer;a: in out t_arbre;pat:out t_patient);
 PROCEDURE Menu_Creation_Compte ( L: in out T_PteurPers;A: in out t_Arbre;pat:out t_patient);
 PROCEDURE Menu_Premier_Choix(L : in out T_Pteurpers; Date_Jour :in out T_Date; D: in out T_File_Dem;demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt:out integer;id: in out t_pers;pers:in out t_personnel;choix: out integer;a: in out t_arbre;pat: out t_patient);
-
+PROCEDURE Menu_Medecin (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: OUT T_Document;Initialisation_Id:Integer;Date_Jour: OUT T_Date;Pers:OUT T_Personnel;L:T_Pteurpers);
 END Menu_Main;
 
