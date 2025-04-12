@@ -128,11 +128,13 @@ PACKAGE BODY Liste_Personnel IS
       New_line;
       put_line("Creation d un compte pour un nouvel employe:");
       Put_line("Quelle personne voulez-vous ajouter?");
-       Saisie_Personnel(Pers);
-
+      Saisie_Personnel(Pers);
+      PUT_line("Verification si homonyme.");
        IF Recherche_1PERS (L, Pers.Identite_Personnel) THEN
-         Put_Line ("Ajout impossible, homonyme present");
+         Put_Line ("Creation du compte impossible, homonyme present");
+      ELSE
          L:=NEW T_CellPers'(Pers,L);
+         put_line("Creation reussie.");
        END IF;
    END Ajout_Pers;
 -----------------------------------------------------------------------------------------------------
@@ -151,30 +153,6 @@ PACKAGE BODY Liste_Personnel IS
       END IF;
       RETURN(Trouve);
    END Verif_Connexion;
------------------------------------------------------------------------------------------------------
---   PROCEDURE Connexion_Pers ( L: T_Pteurpers;Login : T_Titre; Empreinte : Integer; Fonction : Role_P) IS
---   BEGIN
---      LOOP
---      IF Verif_Connexion (L,Login,Empreinte) THEN
---            Put_Line("Utilisateur trouve dans le personnel");
---         IF Fonction = Medecin THEN
---               Put("Envoie vers le menu Personnel Medecin");
---         ELSIF
---               Fonction = Administrateur THEN
---               Put("Envoie vers le menu Personnel Secretaire");
---         ELSIF
---               Fonction = Secretaire THEN
---               Put("Envoie vers le menu Personnel Secretaire");
---         ELSE
---            Put("Erreur de saisie.");
---         END IF;
---      ELSE
---            Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
---            Cpt:=Cpt+1;
---            IF Cpt = 3 THEN
---
---      END IF;
---   END Connexion_Pers;
 -----------------------------------------------------------------------------------------------------
       PROCEDURE Supp_1Pers (L: IN OUT T_Pteurpers;Pers: OUT T_personnel; Erreur:OUT Boolean)IS
    BEGIN

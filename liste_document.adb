@@ -22,8 +22,9 @@ PACKAGE BODY Liste_Document IS
    END Visu_Liste_Doc;
  ----------------------------------------------------------------------
  PROCEDURE Ajout_Liste_Doc (ListeD : OUT T_Pteurdoc;D:T_Document)IS
-   BEGIN
-      ListeD:= NEW T_CellDoc'(D,ListeD);
+ BEGIN
+       ListeD:= NEW T_CellDoc'(D,ListeD);
+
    END Ajout_Liste_Doc;
 ----------------------------------------------------------------------
 

@@ -30,10 +30,19 @@ PACKAGE Arbre_Patients IS
    FUNCTION Verif_Connexion2 (A : IN T_arbre;Login:T_titre;Empreinte:integer) RETURN Boolean ;
 
    FUNCTION Recherche_Pat_Pt (A : T_Arbre; Pat : T_Patient) RETURN T_Arbre;
-   PROCEDURE Ajout_Doc_Med (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: out T_Document;initialisation_id:integer;date_jour: out t_date;pers:out t_personnel;l:t_pteurpers);
+   PROCEDURE Ajout_Doc_Med (A: IN T_Arbre;ListeD: IN OUT T_Pteurdoc;D: out T_Document;initialisation_id: in out integer;date_jour: out t_date;pers:out t_personnel;l:t_pteurpers);
    FUNCTION Recherche_PatLog (A : T_Arbre; Login : T_Titre) RETURN T_Arbre ;
    PROCEDURE Visu_Doc_Pat (Pat : T_Patient);
    PROCEDURE Visu_All_Document (A: T_Arbre);
-
+   PROCEDURE Affiche_Doc_Med (A: T_Arbre;pers: in t_pers);
+--   FUNCTION Recherche_Med_A (A :T_Arbre; Pers: in T_Pers) RETURN T_Arbre;
+   PROCEDURE Acces_Lecture_Med (A : T_Arbre;date_jour:t_date);
+   PROCEDURE Visu_All_Titre_1patient (A:T_Arbre);
+   PROCEDURE Modif_1doc_Med (A:T_Arbre;Date_Jour:T_Date);
+   PROCEDURE Acces_Lec_Pat (A:T_Arbre;Date_Jour:T_Date);
+   Procedure Ajout_doc_sec (A: IN T_Arbre;ListeD: IN OUT T_Pteurdoc;D: out T_Document;initialisation_id: in out integer;date_jour: out t_date;pers:out t_personnel;l:t_pteurpers);
+   PROCEDURE Modif_1doc_Sec(A:T_Arbre;Date_Jour:T_Date);
+   PROCEDURE Visu_All_Titre_1categ (A:T_Arbre;Categorie:T_Nature);
+   PROCEDURE Visu_All_Titre_1medecin (A:T_Arbre;Identite:T_pers);
    END Arbre_Patients;
 

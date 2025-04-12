@@ -123,19 +123,24 @@ PACKAGE BODY File_demande IS
       Log:T_Titre;
       Klogin:integer;
    BEGIN
+      IF D.Tetedem/=NULL THEN
       Creation_Login(D.Tetedem.Demande.Identite,Log,Klogin);
       IF A = NULL THEN
          RETURN(False);
 
       ELSIF Log = Login THEN
          IF A.Patient.Nomjm = D.Tetedem.Demande.Nomjm THEN
-            RETURN(True);
+            RETURN(FALSE);
          ELSIF Recherche_Filepat(A.Fg,Login,D) THEN
-            RETURN(True);
+            RETURN(FALSE);
          ELSE RETURN (Recherche_Filepat(A.Fd,Login,D));
          END IF;
-      ELSE RETURN(False);
+      ELSE RETURN(TRUE);
+         END IF;
+      ELSE
+         return(TRUE);
       END IF;
+
    END Recherche_Filepat;
 -----------------------------------------------------------------------------------------------------
 --   FUNCTION Recherche_FilePat2 (A:t_arbre;D:T_File_Dem) RETURN boolean IS

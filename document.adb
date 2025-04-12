@@ -1,5 +1,5 @@
-WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,file_demande,liste_personnel, date;
-USE Ada.Text_Io, Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,file_demande,liste_personnel, date;
+WITH  Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel,file_demande,liste_personnel, date;
+USE  Ada.Integer_Text_IO,Ada.Characters.Handling,Outils,Personnel,file_demande,liste_personnel, date;
 
 PACKAGE BODY Document IS
 -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,9 @@ PACKAGE BODY Document IS
       put_line("Voici les natures possibles : Ordonnance, Certificat_Med, Compte_Rendu, Resultat_Exam");
       Put_Line("Veuillez indiquer la nature du document:");
       Get_Line(S,K);
-      Nature:=T_nature'Value(S(1..K));
+      s:=to_upper(s);
+      Nature:=T_Nature'Value(S(1..K));
+
    END Saisie_Nature;
 --------------------------------------------------------------------------------------------------pas testée
    PROCEDURE Visu_1document (D: in T_Document)IS
@@ -22,9 +24,9 @@ PACKAGE BODY Document IS
       Put_line("Nature du document:");
       Put(T_Nature'Image(D.Nature));New_Line;
       Put_Line("Medecin associe a ce document:");
-      visualisation_liste_pers(D.medecin);
---      Put(D.Medecin.Personnel.Identite_Personnel.Prenom);New_Line;
---      Put(D.Medecin.Personnel.Identite_Personnel.Prenom);new_line;
+--      visualisation_liste_pers(D.medecin);
+      Put(D.Medecin.Personnel.Identite_Personnel.nom);New_Line;
+      Put(D.Medecin.Personnel.Identite_Personnel.Prenom);new_line;
       IF D.Id_Lecture THEN
          Put_Line("Document lu.");
       ELSE
@@ -38,7 +40,7 @@ PACKAGE BODY Document IS
       Affiche_Date(D.date_dermodif); new_line;
    END Visu_1document;
 ----------------------------------------------------------------------------------------------------------------------------------------------
-   PROCEDURE Saisie_1doc (D: out T_Document;Initialisation_id:integer;date_jour: out t_date;Pers: out t_personnel;L:t_pteurpers)IS
+   PROCEDURE Saisie_1doc (D: out T_Document;Initialisation_id: IN out  integer;date_jour: out t_date;Pers: out t_personnel;L:t_pteurpers)IS
    BEGIN
       LOOP
       Put_Line("Veuillez indiquer le medecin a l origine de ce document :");
@@ -51,6 +53,7 @@ PACKAGE BODY Document IS
       END LOOP;
       Put_Line("Vous etes dans la saisie du document.");
       D.Id:=Initialisation_Id+1;
+      Initialisation_Id:=Initialisation_Id+1;
       PUT_line("Veuillez saisir le titre:");
       Saisie_Titre(D.Titre,D.K_Titre);
       Saisie_Nature(D.Nature);
