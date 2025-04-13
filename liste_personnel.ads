@@ -12,8 +12,7 @@ PACKAGE Liste_Personnel IS
    END RECORD;
 
    PROCEDURE Initialisation_Pers (L: IN OUT T_Pteurpers);
-   PROCEDURE Visualisation_Liste_Pers (L: IN
-      T_Pteurpers);
+   PROCEDURE Visualisation_Liste_Pers (L: IN T_Pteurpers);
    FUNCTION Recherche_1pers (L: IN T_Pteurpers; Pers : IN T_Pers) RETURN Boolean;
    FUNCTION Recherche_1pers2 (L: IN T_Pteurpers; Pers : IN T_Personnel) RETURN t_pteurpers; --non testée
    FUNCTION Verif_Connexion (L : IN T_Pteurpers;Login:T_titre;Empreinte:integer) RETURN Boolean;

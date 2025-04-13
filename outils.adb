@@ -1,12 +1,15 @@
 PACKAGE BODY Outils IS
 -----------------------------------------------------------------------------------------------------
+--mise en page
    PROCEDURE Tiret (N : IN Natural) IS
    BEGIN
       FOR I IN 1..2*N LOOP
          Put ('-');
       END LOOP;
    END Tiret;
-   -----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+
    PROCEDURE Saisie_Mot (M : OUT T_Mot; K : OUT Integer) IS
       Ok : Boolean := False;
    BEGIN
@@ -15,7 +18,7 @@ PACKAGE BODY Outils IS
          Get_Line (M, K);
          M := To_Upper (M);
 
-         --Vérification des caractères saisis
+         --Verification des caracteres saisis
          FOR I IN 1..K LOOP
             CASE M(I) IS
                WHEN 'A'..'Z' =>
@@ -32,7 +35,7 @@ PACKAGE BODY Outils IS
                   ELSE Ok:=True;
                   END IF;
                WHEN OTHERS =>
-                  Put ("Erreur de saisie, erreur, caracteres non autorises ");
+                  Put_Line ("Erreur de saisie, erreur, caracteres non autorises ");
                   Ok := False;
                   EXIT;
             END CASE;
@@ -41,19 +44,23 @@ PACKAGE BODY Outils IS
       END LOOP;
 
    END Saisie_Mot;
-   -----------------------------------------------------------------------------------------------------
-   PROCEDURE Saisie_Titre (M : OUT T_Titre; K :    OUT Integer) IS
-      Ok : Boolean := False;
+
+-----------------------------------------------------------------------------------------------------
+
+   PROCEDURE Saisie_Titre (M : OUT T_Titre; K : OUT Integer) IS
    BEGIN
          M := (OTHERS =>' ');
+         New_Line;
          Put ("Saisie : ");
          Get_Line (M, K);
          M := To_Upper (M);
    END Saisie_Titre;
 
-   -----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+
    PROCEDURE Saisie_Identite (Id : OUT T_Pers) IS
    BEGIN
+      New_Line;
       Put_Line ("Saisie de l'identite : ");
       Put_Line ("Nom :");
       Saisie_Mot(Id.Nom, Id.Knom);
@@ -62,7 +69,9 @@ PACKAGE BODY Outils IS
       Saisie_Mot(Id.Prenom, Id.Kprenom);
       Id.Prenom := To_Upper(Id.Prenom);
    END Saisie_Identite;
-   -----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+--combinaison nom et prenom de l'utilisateur
    PROCEDURE Creation_Login (Id : IN out T_Pers; Login : OUT T_Titre; Klogin : OUT Integer)IS
    BEGIN
       Login := (OTHERS =>' ');
@@ -72,8 +81,9 @@ PACKAGE BODY Outils IS
       Login(Id.Knom+1):='_';
       Login(id.knom+2..id.knom+id.kprenom+1):= Id.preNom(1..ID.Kprenom);
       Klogin:=Id.Kprenom+Id.Knom+1;
-   END CREATION_Login;
-   -----------------------------------------------------------------------------------------------------
+   END Creation_Login;
+
+-----------------------------------------------------------------------------------------------------
 
    FUNCTION Calcul_Empreinte (Mdp : T_Mdp) RETURN Integer IS
       Emp : Integer := 0;
@@ -85,6 +95,7 @@ PACKAGE BODY Outils IS
    END Calcul_Empreinte;
 
 -----------------------------------------------------------------------------------------------------
+--creation de l'empreinte specifique a chaque mdp
    PROCEDURE Init_Empreinte (Emp : OUT Integer) IS
       Mdp : T_Mdp;
       Ok : Boolean;
@@ -118,4 +129,3 @@ PACKAGE BODY Outils IS
 -----------------------------------------------------------------------------------------------------
 
 END Outils;
-

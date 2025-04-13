@@ -15,13 +15,19 @@ PROCEDURE Main IS
    --D : T_Document;
    Login : T_Titre;
    Date_Jour : T_Date;
-   N: T_File_Dem; --D
+   D: T_File_Dem; --D
    Demande: T_Demande;
    Empreinte: Integer;
    Fonction: Role_P;
    Cpt: Integer;
    Pers: T_Personnel;
    Choix: Integer;
+   Initialisation_Id : Integer;
+   ListeD : T_Pteurdoc;
+   Document : T_Document;
+
+
+
 
 
 
@@ -45,10 +51,10 @@ BEGIN
 --   Put (emp);
 --   Saisie_Titre (T, K);
 --   Put (T);
-   Put ("test packages arbre_patients");
-   New_Line;
-   Init_Arbre (A, L);
-   Affichage_Prefixe (A);
+--   Put ("test packages arbre_patients");
+--   New_Line;
+--   Init_Arbre (A, L);
+--   Affichage_Prefixe (A);
 --   Nouveau_Pat (A);
 --   Affichage_Prefixe (A);
 --   Suppression_Pat (A);
@@ -58,8 +64,8 @@ BEGIN
 --   Visualisation_Liste_Pers (L);
 --   Ajout_Pers (L);
 --   Visualisation_Liste_Pers (L);
-   Menu_Demarrage (L, Date_Jour,N, Demande, Login, Empreinte, Fonction, Cpt, Id, Pers, Choix, A, Pat);
 
+   Menu_Demarrage (Initialisation_Id,ListeD,Document,L,Date_Jour,D,Demande,Login,Empreinte,Fonction,Cpt,Id,Pers,Choix,A,Pat);
 
 
 

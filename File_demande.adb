@@ -4,7 +4,7 @@ USE Ada.Text_Io, Ada.Integer_Text_IO,ada.Characters.Handling,liste_personnel,arb
 PACKAGE BODY File_demande IS
 
 -----------------------------------------------------------------------------------------------------
--- utilisateur qui fait mdp oublié donc ajoute une demande
+-- utilisateur qui fait mdp oublie donc ajoute une demande
    PROCEDURE AJout_Demande (D: IN OUT T_file_dem;Demande:IN out T_Demande) IS
       K:Integer;
       s:string(1..15);
@@ -25,6 +25,7 @@ PACKAGE BODY File_demande IS
       END IF;
    END Ajout_Demande;
 -----------------------------------------------------------------------------------------------------
+
    PROCEDURE Suppression_Demande (Demande : out T_Demande; F : IN OUT T_File_Dem;Erreur : OUT Boolean)IS
    BEGIN
       IF F.Findem /=NULL THEN
@@ -38,6 +39,7 @@ PACKAGE BODY File_demande IS
       END IF;
    END Suppression_Demande;
 -----------------------------------------------------------------------------------------------------
+
    PROCEDURE Visu_1demande (Demande : IN T_Demande) IS
    BEGIN
       Put_Line("Identite:");
@@ -51,6 +53,7 @@ PACKAGE BODY File_demande IS
       Put(Role_P'Image(demande.Fonction));new_line;
    END Visu_1demande;
 -----------------------------------------------------------------------------------------------------
+
    PROCEDURE Visu_File_Demande (F: IN T_File_Dem) IS
       Tmp:T_Pteurdemand:=F.Tetedem;
    BEGIN
@@ -82,89 +85,93 @@ PACKAGE BODY File_demande IS
       END LOOP;
          RETURN (trouve);
    END Recherche_Jm;
------------------------------------------------------------------------------------------------------   fonctionne
---   FUNCTION Recherche_PatLog (A : T_Arbre; Login : T_Titre) RETURN T_Arbre IS
---      cpt:t_arbre;
+-----------------------------------------------------------------------------------------------------
+--pb avec les feuilles de l'arbre?
+--   FUNCTION Recherche_Patlog (A : T_Arbre; Login: T_Titre) RETURN T_Arbre IS
+--      Cpt : T_Arbre;
 --   BEGIN
 --      IF A = NULL THEN
---         RETURN (Null);
---      ELSIF A.Patient.Login = Login THEN --Trouvee dans l arbre
+--         RETURN (NULL);
+--      ELSIF A.Patient.Login = Login THEN
 --         RETURN (A);
 --      ELSE
---         Cpt:= Recherche_Patlog(A.Fg, Login);
+--         Cpt := Recherche_Patlog (A.Fg, Login);
 --         IF Cpt = NULL THEN
---            Cpt:=Recherche_Patlog (A.Fd, Login);
---            RETURN(Cpt);
+--            Cpt := Recherche_Patlog (A.Fd, Login);
+--            RETURN (Cpt);
 --         ELSE
---            RETURN(Cpt);
+--            RETURN (Cpt);
 --         END IF;
 --      END IF;
---   END Recherche_PatLog;
+--   END Recherche_Patlog;
+
 -----------------------------------------------------------------------------------------------------
-   FUNCTION Recherche_fILEPAT3 (A : T_Arbre; d:t_file_dem) RETURN T_Arbre IS
-      cpt:t_arbre;
+   FUNCTION Recherche_FilePat3 (A:t_arbre; D:T_File_Dem) RETURN t_arbre IS
+      Cpt : T_Arbre;
    BEGIN
       IF A = NULL THEN
-         RETURN (Null);
-      ELSIF A.Patient.nomjm = d.tetedem.demande.nomjm THEN --Trouvee dans l arbre
+         RETURN (NULL);
+      ELSIF A.Patient.Nomjm = D.Tetedem.Demande.Nomjm THEN
          RETURN (A);
       ELSE
-         Cpt:= Recherche_filepat3(A.Fg, d);
+         Cpt := Recherche_Filepat3 (A.Fg, D);
          IF Cpt = NULL THEN
-            Cpt:=Recherche_filepat3(A.Fd, d);
-            RETURN(Cpt);
+            Cpt := Recherche_Filepat3 (A.Fd, D);
+            RETURN (Cpt);
          ELSE
-            RETURN(Cpt);
+            RETURN (Cpt);
          END IF;
       END IF;
-   END Recherche_FILEPAT3;
------------------------------------------------------------------------------------------------------
-   FUNCTION Recherche_FilePat (A:t_arbre;Login:T_Titre;D:T_File_Dem) RETURN Boolean IS
-      Log:T_Titre;
-      Klogin:integer;
+   END Recherche_Filepat3;
+
+---------------------------------------------------------------------------------------
+   FUNCTION Recherche_Filepat (A: T_Arbre; Login : T_Titre; D: T_File_Dem) RETURN Boolean IS
+      Log : T_Titre;
+      Klogin : Integer;
    BEGIN
-      IF D.Tetedem/=NULL THEN
+      IF D.Tetedem /= NULL THEN
       Creation_Login(D.Tetedem.Demande.Identite,Log,Klogin);
       IF A = NULL THEN
-         RETURN(False);
-
+         RETURN (False);
       ELSIF Log = Login THEN
          IF A.Patient.Nomjm = D.Tetedem.Demande.Nomjm THEN
-            RETURN(FALSE);
-         ELSIF Recherche_Filepat(A.Fg,Login,D) THEN
-            RETURN(FALSE);
-         ELSE RETURN (Recherche_Filepat(A.Fd,Login,D));
+            RETURN (False);
+         ELSIF Recherche_Filepat (A.Fg, Login, D) THEN
+            RETURN (False);
+         ELSE RETURN (Recherche_Filepat (A.Fd, Login, D));
          END IF;
-      ELSE RETURN(TRUE);
+      ELSE RETURN (True);
          END IF;
-      ELSE
-         return(TRUE);
+      ELSE RETURN (True);
       END IF;
 
    END Recherche_Filepat;
+
 -----------------------------------------------------------------------------------------------------
 --   FUNCTION Recherche_FilePat2 (A:t_arbre;D:T_File_Dem) RETURN boolean IS
---      Log:T_Titre;
---      Klogin:integer;
---   BEGIN
---      Creation_Login(D.Tetedem.demande.Identite,Log,Klogin);
---      IF Log = A.patient.login THEN
---         IF A.Patient.Nomjm = D.Tetedem.Demande.Nomjm THEN
---            RETURN(true);
---         ELSE
---            RETURN (False);
---         END IF;
---      ELSE
---         RETURN (False);
---      END IF;
---   END Recherche_Filepat2;
------------------------------------------------------------------------------------------------------
-   PROCEDURE Traitement_demande(F: IN out T_File_Dem ; L:T_Pteurpers;a: in out t_arbre;login:t_titre) IS
+ --      Log:T_Titre;
+ --      Klogin:integer;
+ --   BEGIN
+ --      Creation_Login(D.Tetedem.demande.Identite,Log,Klogin);
+ --      IF Log = A.patient.login THEN
+ --         IF A.Patient.Nomjm = D.Tetedem.Demande.Nomjm THEN
+ --            RETURN(true);
+ --         ELSE
+ --            RETURN (False);
+ --         END IF;
+ --      ELSE
+ --         RETURN (False);
+ --      END IF;
+ --   END Recherche_Filepat2;
+ -----------------------------------------------------------------------------------------------------
+   -- Traitement de la demande de nouveau mot de passe.
+   PROCEDURE Traitement_demande(F: IN out T_File_Dem ; L:T_Pteurpers; a:in out t_arbre; login : t_titre) IS
       Erreur : Boolean;
       tmp:t_pteurpers:=l;
    BEGIN
       Put("Voici le nom de jeune fille de la premiere demande a traiter:");
       Put(F.Tetedem.Demande.NOMJM); New_Line;
+
                IF recherche_jm(F,L) THEN
                   Put_Line("Nom de jeune fille de la mere bien conforme.");
                   Put_Line("Vous allez pouvoir choisir un nouveau mot de passe pour cette personne :");
@@ -178,19 +185,21 @@ PACKAGE BODY File_demande IS
                         Init_Empreinte(tmp.Personnel.Empreintemdp);
                         Put_Line("Suppression de la demande.");
                         Suppression_Demande(F.Tetedem.Demande,F,Erreur);
-
-               ELSIF  recherche_filepat3(A,F)/= null  THEN
+               ELSIF  Recherche_filepat3(A,F) /= NULL THEN
                       Put_Line("Nom de jeune fille de la mere bien conforme.");
                       Put_Line("Vous allez pouvoir choisir un nouveau mot de passe pour cette personne :");
                       Init_Empreinte(A.Patient.Empreintemdp);
-                      Put_Line("Suppression de la demande.");
-                      Suppression_Demande(F.Tetedem.Demande,F,Erreur);
-               ELSE
-                  Put_Line("Nom de jeune fille non trouve ni dans le personnel ni dans la patientele.");
-                  Put_Line("Annulation de la demande.");
-                  F.TETEDEM:=f.tetedem.demandsuiv;
-               END IF;
-END Traitement_Demande;
+                       Put_Line("Suppression de la demande.");
+                       Suppression_Demande(F.Tetedem.Demande,F,Erreur);
+                ELSE
+                   Put_Line("Nom de jeune fille non trouve ni dans le personnel ni dans la patientele.");
+                   Put_Line("Annulation de la demande.");
+                   F.TETEDEM:=f.tetedem.demandsuiv;
+      END IF;
+
+   END Traitement_Demande;
+
 -----------------------------------------------------------------------------------------------------
+
 END File_Demande;
 
