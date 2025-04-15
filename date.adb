@@ -101,7 +101,36 @@ PACKAGE BODY Date IS
          Put(" -- ");
          Put(T.Annee,1);
 
-      END affiche_date;
+                     END Affiche_Date;
+
+
+   FUNCTION Comp_Dates (D1, D2 : IN T_Date) RETURN Boolean IS
+      supp : Boolean;
+   BEGIN
+
+      IF D1.Annee> D2.Annee THEN
+         supp := true;
+      ELSE
+         IF D1.Annee = D2.Annee THEN
+            IF T_Mois'Pos(D1.Mois) > T_Mois'Pos(D2.Mois) THEN
+               supp := true;
+            ELSE
+               IF T_Mois'Pos(D1.Mois) = T_Mois'Pos(D2.Mois) THEN
+                  IF D1.numj > D2.numj THEN
+                     Supp:=true;
+                  ELSE
+                     Supp:= False;
+                  END IF;
+               ELSE
+                  Supp:=False;
+               END IF;
+            END IF;
+         ELSE
+            Supp:= False;
+         END IF;
+      END IF;
+      RETURN(Supp);
+   END Comp_Dates;
    END Date;
 
 

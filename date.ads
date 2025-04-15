@@ -19,5 +19,6 @@ PACKAGE Date IS
    PROCEDURE Affiche_Date(T: IN T_Date); -- Besoin pour afficher la date du jour et autres dates
    PROCEDURE Lendemain (T : IN OUT T_Date);
    -- Actualise le jour au lendemain // passage au lendemain
+   FUNCTION Comp_Dates (D1, D2 : IN T_Date) RETURN Boolean;
 END Date;
 

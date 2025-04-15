@@ -17,31 +17,46 @@ PACKAGE BODY File_demande IS
             Saisie_Identite(Demande.Identite);
             Pers.Identite_Personnel:=demande.Identite;
             pat.identite_patient:=demande.identite;
-      Put_Line("Veuillez saisir le nom de jeune fille de votre mere.");
-      Saisie_mot(Demande.NomJm,k);
-      Put_Line("Veuillez indiquer votre fonction:");
-      Get_Line(S,K);
+            Put_Line("Veuillez saisir le nom de jeune fille de votre mere.");
+            Saisie_mot(Demande.NomJm,k);
+            Put_Line("Veuillez indiquer votre fonction:");
+            Get_Line(S,K);
+            s:=to_upper(s);
             DEMANDE.Fonction:=Role_P'Value(S(1..K));
          IF Demande.Fonction = Patient OR Demande.Fonction = Secretaire OR Demande.Fonction = Medecin OR Demande.Fonction = Administrateur THEN
                EXIT;
          END IF;
          EXCEPTION
             WHEN Data_Error => Put_Line ("merci de saisir une fonction valide");
+            skip_line;
             WHEN Constraint_Error => Put_Line ("merci de saisir une fonction valide");
+            skip_line;
          END;
          END LOOP;
       IF D.Tetedem = NULL THEN
-         D.Tetedem:= NEW T_CellDemand'(Demande,NULL);
+         D.Tetedem:= NEW T_CellDemand'(Demande,NULL); PUT_line("Ajout reussi.");
          D.Findem:=D.Tetedem;
       ELSE
-         D.FINdem.demandSUIV:= NEW T_Celldemand'(Demande,NULL);
+         D.FINdem.demandSUIV:= NEW T_Celldemand'(Demande,NULL); PUT_line("Ajout reussi.");
          D.FINdem:=D.Findem.Demandsuiv;
       END IF;
-      IF Demande.Fonction /= PATIENT THEN
-         Recherche_1pers2(L,Pers).personnel.Demandemdp:=True;
-      ELSE Recherche_Pat_Pt(A,Pat).patient.Demandemdp:=TRUE;
-      END IF;
 
+
+IF Demande.Fonction = Patient THEN
+         IF Recherche_Pat_Pt(A,Pat) /=NULL THEN
+            Recherche_Pat_Pt(A,Pat).Patient.Demandemdp:=True;
+         ELSE
+            Put_Line ("Personne non presente dans la patientele");
+         END IF;
+
+      ELSIF Demande.Fonction = Medecin OR Demande.Fonction = Secretaire OR Demande.Fonction = Secretaire THEN
+         IF Recherche_1pers2 (L, Pers) /= NULL THEN
+            Recherche_1pers2(L,Pers).Personnel.Demandemdp:=True;
+         ELSE
+            Put_Line ("Personne non presente dans le personnel");
+         END IF;
+      ELSE Put_Line ("Personne non trouvee");
+  END IF;
    END Ajout_Demande;
 -----------------------------------------------------------------------------------------------------
    PROCEDURE Suppression_Demande (Demande : out T_Demande; F : IN OUT T_File_Dem;Erreur : OUT Boolean)IS
@@ -85,36 +100,24 @@ PACKAGE BODY File_demande IS
 -----------------------------------------------------------------------------------------------------
    FUNCTION Recherche_Jm (F: t_file_dem; L:in T_Pteurpers) RETURN boolean IS
       Tmp: T_Pteurpers:=L;
-      trouve: boolean:=false;
+      Trouve: Boolean:=False;
+      D: t_file_dem:=f;
    BEGIN
       WHILE Tmp/= NULL LOOP
-         IF F.tetedem/= null then
-            IF F.Tetedem.Demande.Nomjm = tmp.Personnel.Nomjm THEN
+
+         IF d.tetedem/= null then
+            IF d.Tetedem.Demande.Nomjm = tmp.Personnel.Nomjm THEN
                Trouve:=True;
+               IF TMP.PERSONNEL.DEMANDEMDP = True THEN
+                  Put_Line("Acces refuse demande de mot de passe en cours.");
+               END IF;
+
             END IF;
          END IF;
         tmp:=tmp.persuiv;
       END LOOP;
          RETURN (trouve);
    END Recherche_Jm;
------------------------------------------------------------------------------------------------------   fonctionne
---   FUNCTION Recherche_PatLog (A : T_Arbre; Login : T_Titre) RETURN T_Arbre IS
---      cpt:t_arbre;
---   BEGIN
---      IF A = NULL THEN
---         RETURN (Null);
---      ELSIF A.Patient.Login = Login THEN --Trouvee dans l arbre
---         RETURN (A);
---      ELSE
---         Cpt:= Recherche_Patlog(A.Fg, Login);
---         IF Cpt = NULL THEN
---            Cpt:=Recherche_Patlog (A.Fd, Login);
---            RETURN(Cpt);
---         ELSE
---            RETURN(Cpt);
---         END IF;
---      END IF;
---   END Recherche_PatLog;
 -----------------------------------------------------------------------------------------------------
    FUNCTION Recherche_fILEPAT3 (A : T_Arbre; d:t_file_dem) RETURN T_Arbre IS
       cpt:t_arbre;

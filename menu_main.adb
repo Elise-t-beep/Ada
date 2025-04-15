@@ -1,11 +1,12 @@
 
 PACKAGE BODY Menu_Main IS
 --------------------------------------------------------------------------------------------------
-   PROCEDURE Menu_Demarrage (Doc:in out t_doc_archive;Date_archiv: out t_date;Initialisation_Id:in out integer;ListeD: in out t_pteurdoc;Document: in out t_document;L: in out t_pteurpers; Date_Jour : out T_Date;D: in out T_File_Dem; demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers:in out t_personnel;choix: out integer;a: in out t_arbre;pat: out t_patient) is
+   PROCEDURE Menu_Demarrage (Liste_document_archive:t_pteurdoc;Doc:in out t_doc_archive;Date_archiv: out t_date;Initialisation_Id:in out integer;ListeD: in out t_pteurdoc;Document: in out t_document;L: in out t_pteurpers; Date_Jour : out T_Date;D: in out T_File_Dem; demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers:in out t_personnel;choix: out integer;a: in out t_arbre;pat: out t_patient) is
    BEGIN
       Initialisation_Pers(L);
       Init_Arbre(A,L);
       LOOP
+         tiret(50);
       New_Line;
       Put("Bienvenue");new_line;
       Put_line("Veuillez saisir la date du jour:");
@@ -13,9 +14,11 @@ PACKAGE BODY Menu_Main IS
       put_line("Voici la date du jour:");
       Affiche_Date(Date_Jour);NEW_line;
       Visualisation_Liste_Pers(L);
-      AFFICHage_prefixe(A);
+         AFFICHage_Prefixe(A);
+         Tiret(50);
+         new_line;
       LOOP
-         Menu_Premier_Choix(Doc,Date_archiv,Initialisation_id,Listed,document,L,Date_Jour,D,Demande,Login,Empreinte,Fonction,Cpt,id,pers,choix,a,pat);
+         Menu_Premier_Choix(Liste_document_archive,Doc,Date_archiv,Initialisation_id,Listed,document,L,Date_Jour,D,Demande,Login,Empreinte,Fonction,Cpt,id,pers,choix,a,pat);
          IF Cpt = 3 THEN
             put_line("Erreur de connexion, redirection vers la page d'accueil.");
             EXIT;
@@ -30,17 +33,21 @@ PACKAGE BODY Menu_Main IS
       END LOOP;
    END Menu_Demarrage;
 -----------------------------------------------------------------------------------------------------
-   PROCEDURE Menu_Premier_Choix(Doc:in out t_doc_archive;Date_archiv: out t_date;Initialisation_id:in out  integer;ListeD: in out t_pteurdoc;Document: in out t_document; L : in out T_Pteurpers; Date_Jour :in out T_Date; D: in out T_File_Dem;demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers: in out t_personnel;choix: OUT integer;a: in out t_arbre;pat: out t_patient) IS
+   PROCEDURE Menu_Premier_Choix(Liste_document_archive:t_pteurdoc;Doc_archiv:in out t_doc_archive;Date_archiv: out t_date;Initialisation_id:in out  integer;ListeD: in out t_pteurdoc;Document: in out t_document; L : in out T_Pteurpers; Date_Jour :in out T_Date; D: in out T_File_Dem;demande: in out t_demande;login: out t_titre;empreinte: out integer;fonction: out role_p;cpt: out integer;id: in out t_pers;pers: in out t_personnel;choix: OUT integer;a: in out t_arbre;pat: out t_patient) IS
       REP : character;
 --      Ap:t_arbre;
    BEGIN
       cpt:=0;
       LOOP
+         Tiret(50);
+         new_line;
       Put_line("Voici ce que vous pouvez faire:");
       Put_line("1-Demander un nouveau mot de passe.");
       Put_line("2-Se connecter.");
       Put_line("3- Passer au lendemain.");
-      Put_line("Que souhaitez-vous faire ? 1/2/3");
+         Put_Line("Que souhaitez-vous faire ? 1/2/3");
+         New_Line;
+
          Get(Rep);Skip_Line;
 
       CASE Rep IS
@@ -58,8 +65,8 @@ PACKAGE BODY Menu_Main IS
                            EXIT;
                                  ELSIF
                                     Fonction = Administrateur THEN
-                                    Put("Envoie vers le menu Personnel Administrateur.");
-                                    Menu_Admin(Document,Date_archiv,date_jour,L,D,Id,Pers,Choix,A,Pat);
+                                    Put_line("Envoie vers le menu Personnel Administrateur.");
+                                    Menu_Admin(Liste_document_archive,Doc_archiv,Document,Date_archiv,date_jour,L,D,Id,Pers,Choix,A,Pat);
                                        IF Choix = 1 THEN
                                           EXIT;
                                        END IF;
@@ -70,7 +77,7 @@ PACKAGE BODY Menu_Main IS
                            EXIT;
                                  END IF;
                         ELSE
-                           Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
+                           Put_Line("Erreur de connexion, veuillez recommencer.");
                            Cpt:=Cpt+1;
                         END IF;
                         IF Cpt = 3 THEN --retour au menu de demarrage
@@ -82,19 +89,19 @@ PACKAGE BODY Menu_Main IS
 
                   ELSIF Fonction = Patient THEN
                   IF Recherche_Patlog(A,Login) /= NULL THEN -- recherche du patient dans l'arbre
-                     IF Recherche_Filepat (A,Login,D)=false THEN --verification si patient pas en attente d un nouveau mdp
+                    -- IF Recherche_Filepat3 (A,D)/= NULL THEN --verification si patient pas en attente d un nouveau mdp
                         IF Verif_Connexion2 (A,Login,Empreinte) THEN --verification des informations de connexion
                            Put_Line("Utilisateur trouve dans la patientele.");
                            Put_Line("Envoie vers menu patient, en cours");
                            Menu_Patient (A, Date_jour, Login);
                         ELSE
-                           Put_Line("Erreur de saisie, veuillez recommencez la connexion.");
+                           Put_Line("Erreur de connexion.");
                            Cpt:=Cpt+1;
                         END IF;
-                     ELSE
-                        Put_Line("Connexion impossible, une demande de mot de passe est en cours.");Cpt:=Cpt+1;
-                     END IF;
-                  ELSE PUT_line("Personne non presente dans la patientele, veuillez recommencez la connexion.");
+                  --   ELSE
+                   --     Put_Line("Connexion impossible, une demande de mot de passe est en cours.");Cpt:=Cpt+1;
+                  --   END IF;
+                  ELSE PUT_line("Erreur de connexion, veuillez recommencer.");
                   Cpt:=Cpt+1;
                   END IF;
                ELSE
@@ -119,20 +126,21 @@ END Menu_Premier_Choix;
    BEGIN
       LOOP
          BEGIN
-
+            tiret(50);new_line;
       Put_Line("Veuillez indiquer votre login");
       saisie_titre(Login, klogin);
       Put_Line("Veuillez indiquer votre mot de passe");
       Init_Empreinte(Empreinte);
-      Put_Line("Veuillez indiquer votre fonction:");
+            Put_Line("Veuillez indiquer votre fonction:");
+            tiret(50);new_line;
       Get_Line(S,K);
             Fonction:=Role_P'Value(S(1..K));
             IF Fonction = Patient OR Fonction = Secretaire OR Fonction = Medecin OR Fonction = Administrateur THEN
                EXIT;
             END IF;
          EXCEPTION
-            WHEN Data_Error => Put_Line ("merci de saisir une fonction valide");
-            WHEN Constraint_Error => Put_Line ("merci de saisir une fonction valide");
+            WHEN Data_Error => Put_Line ("Merci de saisir une fonction valide");
+            WHEN Constraint_Error => Put_Line ("Merci de saisir une fonction valide");
          END;
          END LOOP;
    END Menu_Connexion;
@@ -140,6 +148,7 @@ END Menu_Premier_Choix;
    PROCEDURE Menu_Creation_Compte ( L: IN OUT T_PteurPers;A: in out t_Arbre) IS
       choix : CHARACTER;
    BEGIN
+      tiret(50);new_line;
       Put_Line("Vous etes dans la creation d un compte utilisateur.");
             LOOP
             Put_Line("Vous voulez creer un nouveau compte pour un personnel ou un patient? 1/2");
@@ -154,10 +163,11 @@ END Menu_Premier_Choix;
          END LOOP;
    END Menu_Creation_Compte;
 -----------------------------------------------------------------------------------------------------
-   PROCEDURE Menu_Admin (Document:t_document;Date_archiv: out t_date;date_jour: out t_date;L: in out T_Pteurpers; F: in out T_File_Dem; id : out t_pers; pers: out t_personnel;Choix: out Integer;A:in out t_arbre;pat:out t_patient) IS
+   PROCEDURE Menu_Admin (Liste_document_archive:t_pteurdoc;Doc_archiv:in out t_doc_archive;Document:t_document;Date_archiv: out t_date;date_jour: out t_date;L: in out T_Pteurpers; F: in out T_File_Dem; id : out t_pers; pers: out t_personnel;Choix: out Integer;A:in out t_arbre;pat:out t_patient) IS
       Rep : character;
    BEGIN
-     LOOP
+      LOOP
+         tiret(50);new_line;
       Put_line("Menu Administrateur. Voici ce que vous pouvez faire:");
       Put_line("1-Creer un compte utilisateur.");
       Put_line("2-Visualiser l'ensemble du personnel.");
@@ -170,7 +180,7 @@ END Menu_Premier_Choix;
       Put_Line("9- Supprimer une secretaire.");
       Put_Line("A- Se deconnecter.");
       Put_Line("B- Fermer l'application");
-
+      tiret(50);new_line;
       Put_line("Qu est ce que vous voulez faire ? Veuillez saisir le numero :");
       Get(Rep);Skip_Line;
          rep:=to_upper(rep);
@@ -186,16 +196,21 @@ END Menu_Premier_Choix;
                Visu_file_demande(F);
                Traitement_Demande(F,L,a,A.Patient.login);
             WHEN '5' =>
-               Put("pas fait");
---            Archive_doc(Document,Date_archiv,a);
+               Put_Line("Veuillez indiquer la date d archivage.");
+               Saisie_Date(Date_Archiv);
+               Archivage_fonction_date(date_archiv,a);--ne fonctionne pas
          WHEN '6' =>
-            Put_Line("Voici ceux non archives:");
+               Put_Line("Voici ceux non archives:");
                Visu_All_Document(A);
-               put_line("Voici ceux archives:");
+               Put_Line("Voici ceux archives:");
+               Visu_archive_doc;
          WHEN '7' =>
-            Put_Line("Pas fait");
+            suppression_pat(A);
          WHEN '8' =>
-            Put_Line("Pas fait");
+               Put_Line("Vous etes dans la suppression de medecin,veuillez indiquer l identite de celui que vous voulez supprimer:");
+               SAISIE_identite(id);
+               supp_doc_med(A,id);
+
          WHEN '9' =>
                Supp_Secretaire(L,Id,Pers);
          WHEN 'A'  =>
@@ -213,8 +228,8 @@ END Menu_Admin;
    PROCEDURE Menu_Medecin (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: OUT T_Document;Initialisation_Id:in out Integer;Date_Jour: OUT T_Date;Pers:OUT T_Personnel;L:T_Pteurpers;Id: out t_pers)IS
      rep:character;
      BEGIN
-      LOOP
-         LOOP
+        LOOP
+           tiret(50);new_line;
       Put_line("Menu Medecin. Voici ce que vous pouvez faire:");
       Put_line("1- Ajouter un document pour un patient.");
       Put_line("2- Modifier un document.");
@@ -223,15 +238,9 @@ END Menu_Admin;
       Put_Line("5- Visualiser les titres des documents d un patient.");
       Put_Line("6- Visualiser l'ensemble des documents du centre.");
       Put_Line("7- Se deconnecter.");
-
+tiret(50);new_line;
       Put_line("Qu est ce que vous voulez faire ? Veuillez saisir le numero :");
       Get(Rep);Skip_Line;
-         IF REP < '8' AND Rep > '0' THEN
-            EXIT;
-         ELSE
-            Put_Line("Erreur de saisie veuillez recommencer.");
-         END IF;
-         END LOOP;
       CASE Rep IS
          WHEN '1' =>
             Ajout_doc_med(A,ListeD,D,Initialisation_id,date_jour,pers,L);
@@ -249,7 +258,7 @@ END Menu_Admin;
          WHEN '6' =>
             Put_Line("Voici ceux non archives:");
                Visu_All_Document(A);
-               put_line("Voici ceux archives:");
+               put_line("Voici ceux archives:"); -- ne fonctionne pas encore
          WHEN '7' =>
                  EXIT;
          WHEN OTHERS => Put_line("Erreur de saisie.Veuillez recommencer.");
@@ -260,12 +269,14 @@ END Menu_Admin;
       PROCEDURE Menu_Patient (A : IN OUT T_Arbre; Date_jour:t_date; Login : IN OUT T_Titre) IS
          Choix : Character;
       BEGIN
-            LOOP
+         LOOP
+            tiret(50);
             New_Line;
             Put_Line ("Menu Patientele. Voici ce que vous pouvez faire: ");
             Put_Line ("1- Visualiser tous vos documents.");
             Put_Line ("2- Lire un document.");
             Put_Line ("3- Se deconnecter.");
+            tiret(50);new_line;
             Get (Choix); Skip_Line;
             CASE Choix IS
                WHEN '1' =>
@@ -279,12 +290,12 @@ END Menu_Admin;
             END CASE;
             END LOOP;
       END Menu_Patient;
-
 -----------------------------------------------------------------------------------------------------
 PROCEDURE Menu_Secretaire (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: OUT T_Document;Initialisation_Id:in out Integer;Date_Jour: OUT T_Date;Pers:OUT T_Personnel;L:T_Pteurpers;Id: out t_pers)IS
      rep:character;CATEGORIE:t_nature;
      BEGIN
-      LOOP
+        LOOP
+           tiret(50);new_line;
       Put_line("Menu Secretaire. Voici ce que vous pouvez faire:");
       Put_line("1- Ajouter un document pour un patient.");
       Put_line("2- Modifier un document.");
@@ -294,7 +305,7 @@ PROCEDURE Menu_Secretaire (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: OUT T_
       Put_Line("6- Visualiser les titres des documents d un medecin.");
       Put_Line("7- Visualiser l'ensemble des documents du centre.");
       Put_Line("8- Se deconnecter.");
-
+           tiret(50);new_line;
       Put_line("Qu est ce que vous voulez faire ? Veuillez saisir le numero :");
       Get(Rep);Skip_Line;
 
@@ -309,7 +320,7 @@ PROCEDURE Menu_Secretaire (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: OUT T_
          Put_Line("Vous etes dans la visualisation des titres des documents d un patient.");
          Put_Line("Veuillez indiquer pour quelle categorie vous voulez visualiser les titres de ces documents.");
          Saisie_Nature(categorie);
-         Visu_All_Titre_1categ (A,categorie); --visualise les documents non archives
+         Visu_All_Titre_1categ (A,categorie); --visualise les documents non archives, ne fonctionne pas
          put_line("Voici ceux archives:");
          WHEN '5' =>
                  Visu_All_Titre_1patient (A);
@@ -330,6 +341,5 @@ PROCEDURE Menu_Secretaire (A: IN OUT T_Arbre;ListeD: IN OUT T_Pteurdoc;D: OUT T_
          END CASE;
       END LOOP;
      END MENU_secretaire;
-
 END Menu_Main;
 

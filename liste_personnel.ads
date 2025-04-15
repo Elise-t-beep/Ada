@@ -19,7 +19,5 @@ PACKAGE Liste_Personnel IS
    PROCEDURE Supp_1Pers (L: IN OUT T_Pteurpers;Pers: OUT T_personnel; Erreur:OUT Boolean);
    PROCEDURE Supp_Secretaire (L:IN OUT T_Pteurpers;Id: out t_pers;Pers : out t_personnel);
    PROCEDURE Ajout_Pers (L: OUT T_Pteurpers);
---   PROCEDURE Connexion_Pers ( L: T_Pteurpers;Login : T_Titre; Empreinte : Integer; Fonction : Role_P);
-
 END Liste_Personnel;
 

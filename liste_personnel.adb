@@ -1,10 +1,7 @@
 WITH Ada.Text_IO, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel;
 USE Ada.Text_Io, Ada.Integer_Text_IO,ada.Characters.Handling,outils,personnel;
-
 PACKAGE BODY Liste_Personnel IS
-
 -----------------------------------------------------------------------------------------------------
-
    PROCEDURE Initialisation_Pers (L:IN OUT T_Pteurpers) IS
       L1,L2,L3,L4,L5,L6:T_Personnel;
    BEGIN
@@ -16,7 +13,7 @@ PACKAGE BODY Liste_Personnel IS
       L1.K_nomjm:=5;
       L1.Login:="LOVELACE_ADA"&(13..50=>' ');
       L1.Empreintemdp:=1263;
-      L1.Fonction:=Medecin;
+      L1.Fonction:=MEDECIN;
       L1.Demandemdp:=FALSE;
       L:=NEW T_Cellpers'(L1,NULL);
 
@@ -28,7 +25,7 @@ PACKAGE BODY Liste_Personnel IS
       L2.K_nomjm:=6;
       L2.Login:="EYRE_JANE"&(10..50=>' ');
       L2.Empreintemdp:=1158;
-      L2.Fonction:=Secretaire;
+      L2.Fonction:=SECRETAIRE;
       L2.Demandemdp:=FALSE;
       L:=NEW T_Cellpers'(L2,L);
 
@@ -52,7 +49,7 @@ PACKAGE BODY Liste_Personnel IS
       L4.K_nomjm:=5;
       L4.Login:="LAMPION_SERAPHIN"&(17..50=>' ');
       L4.Empreintemdp:=1720;
-      L4.Fonction:=Secretaire;
+      L4.Fonction:=SECRETAIRE;
       L4.Demandemdp:=FALSE;
       L:=NEW T_Cellpers'(L4,L);
 
@@ -81,9 +78,7 @@ PACKAGE BODY Liste_Personnel IS
       L:=NEW T_Cellpers'(L6,L);
 
    END Initialisation_Pers;
-
 -----------------------------------------------------------------------------------------------------
-
    PROCEDURE Visualisation_Liste_Pers (L: IN T_Pteurpers)IS
       tmp:t_pteurpers:=L;
    BEGIN
@@ -97,9 +92,7 @@ PACKAGE BODY Liste_Personnel IS
          Tmp:=Tmp.perSuiv;
       END LOOP;
    END Visualisation_Liste_Pers;
-
 -----------------------------------------------------------------------------------------------------
-
    FUNCTION Recherche_1pers (L: IN T_Pteurpers; Pers : IN T_Pers) RETURN Boolean IS
       Trouve : Boolean;
    BEGIN
@@ -114,9 +107,7 @@ PACKAGE BODY Liste_Personnel IS
       END IF;
       RETURN(Trouve);
    END Recherche_1pers;
-
 -----------------------------------------------------------------------------------------------------
-
   FUNCTION Recherche_1pers2 (L: IN T_Pteurpers; Pers : IN T_Personnel) RETURN t_pteurpers IS
    BEGIN
       IF L= NULL THEN
@@ -127,10 +118,7 @@ PACKAGE BODY Liste_Personnel IS
          RETURN(Recherche_1pers2(L.Persuiv,Pers));
       END IF;
    END Recherche_1pers2;
-
 -----------------------------------------------------------------------------------------------------
-
---possibilité d'optimiser la procedure? (verif homonyme avant de remplir toutes les infos ?)
    PROCEDURE Ajout_Pers (L: OUT T_Pteurpers) IS
       Pers: t_personnel;
    BEGIN
@@ -141,22 +129,26 @@ PACKAGE BODY Liste_Personnel IS
       put_line("Creation d un compte pour un nouvel employe:");
       Put_line("Quelle personne voulez-vous ajouter?");
       Saisie_Personnel(Pers);
-      Put_Line ("Verification si presence homonyme");
-      IF Recherche_1PERS (L, Pers.Identite_Personnel) THEN
+      PUT_line("Verification si homonyme.");
+       IF Recherche_1PERS (L, Pers.Identite_Personnel) THEN
          Put_Line ("Creation du compte impossible, homonyme present");
       ELSE
          L:=NEW T_CellPers'(Pers,L);
-         Put_Line ("Creation Reussie");
-      END IF;
+         put_line("Creation reussie.");
+       END IF;
    END Ajout_Pers;
 -----------------------------------------------------------------------------------------------------
--- Pas encore testée la verif connexion je savais pas comment faire pour l'instant
    FUNCTION Verif_Connexion (L : IN T_Pteurpers;Login:T_titre;Empreinte:integer) RETURN Boolean IS
       Trouve : Boolean;
    BEGIN
       IF L/= NULL THEN
-         IF L.personnel.login = Login and L.personnel.empreinteMDP = Empreinte THEN
-            Trouve := True;
+         IF L.Personnel.Login = Login AND L.Personnel.EmpreinteMDP = Empreinte THEN
+            IF L.PERSONNEL.DEMANDEMDP = False THEN
+
+               Trouve := True;
+            ELSE Trouve:=False;
+            END IF;
+
          ELSE
            trouve:=Verif_Connexion(L.persuiv,login,empreinte);
          END IF;
@@ -165,30 +157,6 @@ PACKAGE BODY Liste_Personnel IS
       END IF;
       RETURN(Trouve);
    END Verif_Connexion;
------------------------------------------------------------------------------------------------------
---   PROCEDURE Connexion_Pers ( L: T_Pteurpers;Login : T_Titre; Empreinte : Integer; Fonction : Role_P) IS
---   BEGIN
---      LOOP
---      IF Verif_Connexion (L,Login,Empreinte) THEN
---            Put_Line("Utilisateur trouve dans le personnel");
---         IF Fonction = Medecin THEN
---               Put("Envoie vers le menu Personnel Medecin");
---         ELSIF
---               Fonction = Administrateur THEN
---               Put("Envoie vers le menu Personnel Secretaire");
---         ELSIF
---               Fonction = Secretaire THEN
---               Put("Envoie vers le menu Personnel Secretaire");
---         ELSE
---            Put("Erreur de saisie.");
---         END IF;
---      ELSE
---            Put_Line("Personne non presente dans la liste du personnel, veuillez recommencez la connexion.");
---            Cpt:=Cpt+1;
---            IF Cpt = 3 THEN
---
---      END IF;
---   END Connexion_Pers;
 -----------------------------------------------------------------------------------------------------
       PROCEDURE Supp_1Pers (L: IN OUT T_Pteurpers;Pers: OUT T_personnel; Erreur:OUT Boolean)IS
    BEGIN
